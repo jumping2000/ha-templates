@@ -1,4 +1,4 @@
-# 🌊 Home Assistant Automation, Jinja, Blueprintss 💧
+# 🌊 Home Assistant Automation, Jinja, Blueprints 💧
 
 | Home Assistant  |
 | :---: |
