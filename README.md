@@ -1,4 +1,4 @@
-# 🌊 Home Assistant Automation, Jinja, Blueprints 💧
+# ⚙ Home Assistant Templates, Jinja, Blueprints, Appdaemon ⏰
 
 | Home Assistant  |
 | :---: |
