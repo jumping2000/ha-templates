@@ -2,9 +2,9 @@ blueprint:
   name: Centro Notifiche - Mobile and Telegram Actionable Notification
   description: |
     ## Acknowledge Alert Notification
-    This blueprint will send a predifined number of notifications to your device or Telegram app at a pre-defined interval until it has been acknowledged via the actionable notification.
+    This blueprint will send a defined number of notifications to your device or Telegram app at a pre-defined interval until it has been acknowledged via the actionable notification.
     ## Italian ##
-    Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccata dalla acionable notification
+    Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccato l'invio dalla actionable notification
   domain: automation
   source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_actionable_app/centro_notifiche_actionable.yaml
   input:
