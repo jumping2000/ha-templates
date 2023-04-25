@@ -2,9 +2,9 @@
 
 | Home Assistant  |
 | :---: |
-| [Jinja](#introduzione) |
+| [Jinja](/custom_templates) |
 | [Blueprints](/blueprints) | 
-| [Appdaemon](#dispositivi) | 
+| [Appdaemon](/appdaemon) | 
 
 <br>
 
