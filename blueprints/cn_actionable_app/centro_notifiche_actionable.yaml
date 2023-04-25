@@ -1,1 +1,138 @@
-
+blueprint:
+  name: Centro Notifiche - Mobile and Telegram Actionable Notification
+  description: |
+    ## Acknowledge Alert Notification
+    This blueprint will send a predifined number of notifications to your device or Telegram app at a pre-defined interval until it has been acknowledged via the actionable notification.
+    ## Italian ##
+    Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccata dalla acionable notification
+  domain: automation
+  source_url: https://github.com/SgtBatten/HA_blueprints/blob/main/Frigate%20Camera%20Notifications/Stable
+  input:
+    trigger_entity:
+      name: Trigger Entity
+      description: |
+        Entity to listen for state changes on.
+        Enità da monitoare per l'invio della notifica
+      selector:
+        entity:
+    desired_state:
+      name: Desired State
+      description: |
+        What state should this entity be in to trigger the notification?
+        Stato dell'entità da monitorare per l'invio della notifica
+      default: 'on'
+    notification_services:
+      name: Notification services
+      description: |
+        Mobile and Telegram notification service configred in Home Assistant
+        Serivzi di notifica Mobile App e Telegram (esempio: "notify.mi9, notify.telegram")
+      default: false
+      selector:
+        text:
+          type: text
+    title:
+      name: Message Title
+      description: |
+        The title of the message to be sent.
+        Titolo del messaggio da inviare
+    message:
+      name: Message Body
+      description: | 
+        The body of the message to be sent.
+        Corpo del messaggio da inviare
+    dismiss:
+      name: Dismiss Message
+      description: |
+        What to show as the actionable text in the notification.
+        Testo "Actionable" nella notifica
+      default: Dismiss
+    critical:
+      name: (Optional) Critical Notification
+      description: |
+        Send as a critical notification to the mobile device.
+        Invia una notifica critica alla Compaion app
+      default: false
+      selector:
+        boolean:
+    interval:
+      name: Notification Repeat Interval
+      description: |
+        How long to wait for acknowledgement before re-sending the notification. 
+        Tempo di attesa tra una notifica e l'altra
+      default: 5
+      selector:
+        number:
+          max: 100
+          min: 0
+          unit_of_measurement: minutes
+    alert_number:
+      name: Notification Number
+      description: |
+        Total number of notifications sent
+        Numero totale di notifiche inviate
+      default: 3
+      selector:
+        number:
+          max: 20
+          min: 0
+mode: single
+trigger:
+  - platform: state
+    entity_id: !input trigger_entity
+    to: !input desired_state
+variables:
+  trigger_entity: !input trigger_entity
+  desired_state: !input desired_state
+  id: "{{trigger_entity}}-{{desired_state}}-notification"
+  ack_mobile: "{{'ack-'+id}}"
+  title: !input title
+  message: !input message
+  dismiss: !input dismiss
+  critical: !input critical
+  interval: !input interval
+  notify: !input notification_services
+  alert_number: !input alert_number
+action:
+  - alias: "Repeat the sequence UNTIL the conditions are true"
+    repeat:
+      sequence:
+        - service: script.my_notify
+          data:
+            title: "{{title}}"
+            message: "{{message}}"
+            notify: "{{notify}}"
+            mobile: 
+              tag: "{{id}}"
+              group: "{{id}}"
+              # Android Specific
+              ttl: "{{ iif(critical, 0, 3600000) }}"
+              priority: "{{ iif(critical, 'high', 'normal') }}"
+              # iOS Specific
+              push:
+                interruption-level: "{{ iif(critical, 'critical', 'active') }}"
+              # Actions
+              actions:
+                - action: "{{ack_mobile}}"
+                  title: "{{dismiss}}"
+                  destructive: true
+            telegram:
+              # Actions
+              inline_keyboard:
+              -  "🔧 {{ dismiss }}:/{{ack_mobile}}"
+        - wait_for_trigger:
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ack_mobile}}"
+          - platform: event
+            event_type: telegram_callback
+            event_data:
+              data:  "/{{ack_mobile}}"
+          timeout:
+            minutes: !input interval
+      until: "{{  repeat.index > alert_number-1 or wait.remaining > 0 }}"
+  - service: script.my_notify
+    data:
+      title: "-- Attenzione --"
+      notify: "{{notify}}"
+      message: "Notifica periodica cancellata"
