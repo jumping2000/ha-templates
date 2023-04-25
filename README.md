@@ -3,7 +3,7 @@
 | Home Assistant  |
 | :---: |
 | [Jinja](#introduzione) |
-| [Blueprints](#prerequisiti) | 
+| [Blueprints](/blueprints) | 
 | [Appdaemon](#dispositivi) | 
 
 <br>
