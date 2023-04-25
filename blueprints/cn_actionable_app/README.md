@@ -9,7 +9,7 @@ This blueprint will send a defined number of notifications to your device or Tel
 Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccata dalla actionable notification
 <br>
 
-**Ti piace questo package? Lascia una stella su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
+**Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
 [![Websitebadge]][website] [![Forum][forumbadge]][forum] [![telegrambadge]][telegram] [![facebookbadge]][facebook] 
 
