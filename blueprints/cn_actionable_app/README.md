@@ -1,4 +1,4 @@
-# 📱 Centro Notifiche - Mobile and Telegram Actionable Notifications📣
+## 📱 Centro Notifiche - Mobile and Telegram Actionable Notifications📣
 <br>
 
 | Requirements | Version |
