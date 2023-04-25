@@ -6,7 +6,7 @@ blueprint:
     ## Italian ##
     Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccata dalla acionable notification
   domain: automation
-  source_url: https://github.com/SgtBatten/HA_blueprints/blob/main/Frigate%20Camera%20Notifications/Stable
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_actionable_app/centro_notifiche_actionable.yaml
   input:
     trigger_entity:
       name: Trigger Entity
