@@ -1,4 +1,4 @@
-# ⚙ Home Assistant Templates, Jinja, Blueprints, Appdaemon ⏰
+## ⚙ Home Assistant Templates, Jinja, Blueprints, Appdaemon ⏰
 
 | Home Assistant  |
 | :---: |
