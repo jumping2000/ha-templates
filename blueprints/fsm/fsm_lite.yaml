@@ -3,7 +3,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
   description: Finite state machine with 4 states, transiction driven by power sensor
   domain: automation
   author: https://github.com/jumping2000/
-  source_url: https://github.com/jumping2000/ha-templates/blueprints/fsm/fsm_lite.yaml
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/fsm/fsm_lite.yaml
   input:
     ###################################
     power_plug:
