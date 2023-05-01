@@ -11,7 +11,7 @@
 ## FSM for appliance
 This blueprint will use a FSM (finite state machine with 4 states) to simulate your appliance like washing machine, dishwasher, oven, dryer. It also offer a complete set of notification with Teelgram, Companion app, Google Nest and Alexa.
 <br><br>
-Il blueprint realizza una macchina a stati finiti (4 stati) che simula il comportamento di un elettrodomestico e invia un numero predefinito di notifiche via Companion App, Telegram, Google Nest e Alexa.
+Il blueprint realizza una macchina a stati finiti (4 stati) che simula il comportamento di un elettrodomestico e invia un numero predefinito e configurabile di notifiche via Companion App, Telegram, Google Nest e Alexa.
 <br><br>
 
 **Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
