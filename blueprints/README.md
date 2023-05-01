@@ -1,6 +1,6 @@
 | Blueprints | Descrizione |
 | :---: | --- |
-| [Centro Notifiche Actionable Notification](cn_actionable_app/README.md) | Blueprint per CN |
+| [Centro Notifiche Actionable Notification](cn_actionable_app/README.md) | Blueprint per le actionable notification con il CN |
 | [FSM Lite for Appliances](fsm/README.md) | FSM per gestione elettrodomestici |
 
 <br><br>
