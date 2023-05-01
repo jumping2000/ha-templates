@@ -1,5 +1,11 @@
+| Blueprints | Descrizione |
+| :---: | --- |
+| [Centro Notifiche Actionable Notification](#/cn_actionable_app) | Blueprint per CN |
+| [FSM Lite for Appliances](#/fsm) | FSM per gestione elettrodomestici |
 
-**Ti piace questi blueprints? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
+<br><br>
+
+**Ti piacciono questi blueprints? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
 [![Websitebadge]][website] [![Forum][forumbadge]][forum] [![telegrambadge]][telegram] [![facebookbadge]][facebook] 
 
