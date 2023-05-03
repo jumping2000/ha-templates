@@ -241,10 +241,6 @@ variables:
   notify_telegram: !input notify_telegram
   media_player_google: !input  media_player_google
   media_player_alexa: !input  media_player_alexa
-  # notification_services: !input notification_services
-  # notifications_list: |
-  #   {% set all_notifications = notification_services.keys() | list %}
-  #   {{ notifications_list | default(all_notifications, true) }} 
   id: !input identificativo
   ack_mobile: "{{'ack-'+id}}"
   dismiss: !input dismiss
@@ -283,20 +279,18 @@ trigger:
   - id: 'status_notification'
     platform: state
     entity_id: !input status_sensor
+#### CONDITION ####
+condition:
+  - condition: template
+    value_template:
+      "{{ true if automations_off == None else is_state ( automations_off, 'off' ) }}"
 #### ACTION #####
 action:
-  # - service: persistent_notification.create
-  #   data:
-  #     message: "{{notification_services}}"
-  # - service: persistent_notification.create
-  #   data:
-  #     message: "{{notifications_list}}"
-  #####################################
   - alias: check first transcition FROM STATE1 to STATE 2
     if:
       condition: template
-      value_template: "{{ trigger.from_state.state==stato1 and trigger.to_state.state==stato2 }}"
-    then:            
+      value_template: "{{ trigger.from_state.state==stato1 and trigger.to_state.state==stato2  if trigger.from_state.state != None  else False}}"
+    then:         
       - service: input_boolean.turn_off
         target:
           entity_id: input_boolean.lavatrice_runtime
