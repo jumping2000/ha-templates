@@ -201,7 +201,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: Automations Off ( Optional )
       description: |
         [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
-        Input boolean che abiita/disabilita l'automazione
+        Input boolean che abiita/disabilita l'automazione - DA CREARE
       default:
       selector:
         entity:
@@ -286,10 +286,10 @@ condition:
       "{{ true if automations_off == None else is_state ( automations_off, 'off' ) }}"
 #### ACTION #####
 action:
-  - alias: check first transcition FROM STATE1 to STATE 2
+  - alias: check first transaction FROM STATE1 to STATE 2
     if:
       condition: template
-      value_template: "{{ trigger.from_state.state==stato1 and trigger.to_state.state==stato2  if trigger.from_state.state != None  else False}}"
+      value_template: "{{ trigger.from_state.state==stato1 and trigger.to_state.state==stato2 if trigger.from_state.state != None  else False }}"
     then:         
       - service: input_boolean.turn_off
         target:
