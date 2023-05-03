@@ -7,7 +7,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
   input:
     ###################################
     power_plug:
-      name: Appliance Power Consumption
+      name: (REQUIRED) Appliance Power Consumption
       description: |
         The power entity with the power absorption in Watts
         Sensore di potenza che misura i consumi dell'elettrodomestico
@@ -15,7 +15,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         entity:
           domain: sensor
     energy_plug:
-      name: Appliance Energy Consumption
+      name: (REQUIRED) Appliance Energy Consumption
       description: |
         Eenrgy sensor that monitors the enrgy absorbed by device 
         Sensore di energia che misura i consumi dell'elettrodomestico
@@ -23,7 +23,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         entity:
           domain: sensor
     status:
-      name: Device Status (input_select)
+      name: (REQUIRED) Device Status (input_select)
       description: |
         Entity input_select used to monitor the status
         Entità input_select per il cambio di stato dell'elettrodomestico
@@ -31,18 +31,42 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         entity:
           domain: input_select
     status_sensor:
-      name: Device Status (sensor)
+      name: (REQUIRED) Device Status (sensor)
       description: |
         Entity sensor used to show the status
         Entità sensor che pubblica il cambio di stato dell'elettrodomestico
       selector:
         entity:
           domain: sensor
+    counter_sensor:
+      name: (REQUIRED) Cycles counter
+      description: |
+        Entity counter used to count washing cycles
+        Entità counter che ocnteggia i cicli di lavaggio
+      selector:
+        entity:
+          domain: counter
+    helper_runtime:
+      name: (REQUIRED) Runtime helper
+      description: |
+        Entity helper used to calculate total runtime
+        Entità helper usata per il calcolo dei tempi totali di utilizzo
+      selector:
+        entity:
+          domain: input_boolean
+    helper_total_energy:
+      name: (REQUIRED) Total energy helper 
+      description: |
+        Entity helper used to calculate total energy consumed by appliance
+        Entità helper usata per il calcolo dell'energia totale consumata dall'elettrodomestico
+      selector:
+        entity:
+          domain: input_number
     power_start:
-      name: Starting power threshold
+      name: (REQUIRED) Starting power threshold
       description: |
         Power threshold above which we assume the appliance has started
-        Inserisci la potenza che indica l'avvio dell'elettrodomestico
+        Soglia di potenza che indica l'avvio dell'elettrodomestico
       default: 2
       selector:
         number:
@@ -50,10 +74,10 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 30
           unit_of_measurement: Watt
     power_end:
-      name: Finishing power threshold
+      name: (REQUIRED) Finishing power threshold
       description: |
         Power threshold below which we assume the appliance has finished
-        Inserisci la potenza che indica la fine del ciclo di lavaggio dell'elettrodomestico
+         Soglia di potenza che indica la fine del ciclo di lavaggio dell'elettrodomestico
       default: 2
       selector:
         number:
@@ -61,10 +85,10 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 30
           unit_of_measurement: Watt
     power_warm_up:
-      name: Power warm-up threshold
+      name: (REQUIRED) Power warm-up threshold
       description: |
         Power threshold above which we assume the appliance is in warm-up state
-        Inserisci la potenza che indica la fase di riscaldamento dell'acqua dell'elettrodomestico
+         Soglia di potenza che indica la fase di riscaldamento dell'acqua dell'elettrodomestico
       default: 300
       selector:
         number:
@@ -72,7 +96,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 1000
           unit_of_measurement: Watt
     power_cool_down:
-      name: Potenza cool-down threshold
+      name: (REQUIRED) Power cool-down threshold
       description: |
         Power threshold above which we assume the appliance is in cool-down state
         Inserisci la potenza che indica la fase di fine riscaldamento
@@ -83,7 +107,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 200
           unit_of_measurement: Watt
     delay_finale:
-      name: Last delay
+      name: (REQUIRED) Last delay
       description: |
         Last delay before after which we are again in the initial state
         Tempo di attesa prima del ritorno allo stato iniziale
@@ -94,7 +118,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 30
           unit_of_measurement: minutes
     delay_start:
-      name: First delay
+      name: (REQUIRED) First delay
       description: |
         Time spent in the starting state
         Tempo di attesa nello stato iniziale
@@ -105,7 +129,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 10
           unit_of_measurement: minutes
     delay_end:
-      name: Tempo di attesa finale
+      name: (REQUIRED) Final delay
       description: |
         Time spent in the finisching state
         Tempo di attesa per andare nello stato finale (Es. svuotare la lavatrice)
@@ -116,7 +140,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           max: 10
           unit_of_measurement: minutes
     identificativo:
-      name:  Appliance Name
+      name: (REQUIRED) Appliance Name
       description: |
         Appliance Name
         Identificativo dell'oggetto dell'automazione (Es. Lavatrice).
@@ -138,7 +162,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: Telegram notification service
       description: |
         Send notification with Telegram
-        Servizio di notifica Telegram
+        Servizio di notifica Telegram (es. notify.telegram)
       default:
       selector:
         text:
@@ -171,7 +195,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (Optional) Critical Notification
       description: |
         Send as a critical notification to the mobile device.
-        Invio di una notifica critica allo smartphone
+        Invio di una notifica di tipo critico allo smartphone
       default:
       selector:
         boolean:
@@ -198,20 +222,20 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           min: 0
     ###################################
     automations_off:
-      name: Automations Off ( Optional )
+      name: (Optional) Automations Off 
       description: |
         [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
-        Input boolean che abiita/disabilita l'automazione - DA CREARE
+        Input boolean che abiita/disabilita l'automazione
       default:
       selector:
         entity:
           domain: input_boolean
           multiple: false
     debug_on:
-      name: Debug On ( Optional )
+      name: (Optional) Debug Mode On
       description: |
-        System Logging 
-        Log del blueprint
+        [OPTIONAL] System Logging 
+        Raccolta log del blueprint nel file di log di Home Assistant
       default:
       selector:
         boolean:
@@ -241,6 +265,10 @@ variables:
   notify_telegram: !input notify_telegram
   media_player_google: !input  media_player_google
   media_player_alexa: !input  media_player_alexa
+  # notification_services: !input notification_services
+  # notifications_list: |
+  #   {% set all_notifications = notification_services.keys() | list %}
+  #   {{ notifications_list | default(all_notifications, true) }} 
   id: !input identificativo
   ack_mobile: "{{'ack-'+id}}"
   dismiss: !input dismiss
@@ -283,26 +311,30 @@ trigger:
 condition:
   - condition: template
     value_template:
-      "{{ true if automations_off == None else is_state ( automations_off, 'off' ) }}"
+      "{{ true if automations_off == none else is_state ( automations_off, 'off' ) }}"
 #### ACTION #####
 action:
-  - alias: check first transaction FROM STATE1 to STATE 2
+  # - service: persistent_notification.create
+  #   data:
+  #     message: "{{notification_services}}"
+  #####################################
+  - alias: check first transcition FROM STATE1 to STATE 2
     if:
       condition: template
-      value_template: "{{ trigger.from_state.state==stato1 and trigger.to_state.state==stato2 if trigger.from_state.state != None  else False }}"
-    then:         
+      value_template: "{{ trigger.from_state.state==stato1 and trigger.to_state.state==stato2  if trigger.from_state.state != None  else False}}"
+    then:            
       - service: input_boolean.turn_off
         target:
-          entity_id: input_boolean.lavatrice_runtime
+          entity_id: !input helper_runtime
       - service: input_boolean.turn_on
         target:
-          entity_id: input_boolean.lavatrice_runtime
+          entity_id: !input helper_runtime
       - service: counter.increment
         target:
-          entity_id: counter.cicli_lavaggio_lavatrice
+          entity_id: !input counter_sensor
       - service: input_number.set_value
         target:
-          entity_id: input_number.lavatrice_energia_iniziale
+          entity_id: !input helper_total_energy
         data:
           value: "{{ states(energy_sensor) }}"
     #####################################
