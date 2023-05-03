@@ -12,7 +12,7 @@
 ## Mobile and Telegram Actionable Notifications
 This blueprint will send a defined number of notifications to your device or Telegram app at a pre-defined interval until it has been acknowledged via the actionable notification.
 <br><br>
-Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccata dalla actionable notification
+Il blueprint invia un numero predefinito di notifiche via Companion App o Telegram fino a quando non viene bloccato dalla actionable notification.
 <br><br>
 
 **Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
