@@ -6,7 +6,7 @@
 | [Blueprints](/blueprints) | 
 | [Appdaemon](/appdaemon) | 
 
-<br>
+![](https://komarev.com/ghpvc/?username=jumping2000&style=flat-square)
 
 | Supporto |
 | :---: |
