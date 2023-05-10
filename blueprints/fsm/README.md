@@ -12,7 +12,7 @@
 This blueprint will use a FSM (finite state machine with 4 states) to simulate your appliance like washing machine, dishwasher, oven, dryer. It also offers a complete set of notification with Telegram, Companion app, Google Nest and Alexa. Used by following Home Assistant packages :
 1. [Lavatrice](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavatrice.md) (Washing Machine)
 2. Lavastoviglie (Dishwasher)
-3. Forno (Oven)
+3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md) (Oven)
 4. Asciugatrice (Dryer)
 
 <br>
@@ -20,7 +20,7 @@ This blueprint will use a FSM (finite state machine with 4 states) to simulate y
 Il blueprint realizza una macchina a stati finiti (4 stati) che simula il comportamento di un elettrodomestico e invia un numero predefinito e configurabile di notifiche via Companion App, Telegram, Google Nest e Alexa. Da utilizzare, personalizzando le varie soglie di potenza, nei seguenti package:
 1. [Lavatrice](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavatrice.md)
 2. Lavastoviglie
-3. Forno
+3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md)
 4. Asciugatrice
 
 <br>
