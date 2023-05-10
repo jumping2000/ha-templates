@@ -1,10 +1,10 @@
-blueprint:
-  name: Centro Notifiche - Mobile and Telegram Actionable Notification
+blueprint: #https://gist.github.com/hunterjm/fb0d6fc49df910193cf61317149074ee
+  name: Centro Notifiche - Mobile, Telegram, Alexa Actionable Notification
   description: |
     ## Acknowledge Alert Notification
-    This blueprint will send a defined number of notifications to your device or Telegram app at a pre-defined interval until it has been acknowledged via the actionable notification.
+    This blueprint will send a defined number of notifications to your device or Telegram app or Alexa at a pre-defined interval until it has been acknowledged via the actionable notification.
     ## Italian ##
-    Il blueprint invia un numero predefinito di notifiche via Companion App o a Telegram oppure fino a quando non viene bloccato l'invio dalla actionable notification
+    Il blueprint invia un numero predefinito di notifiche via Companion App, Telegram, Alexa oppure fino a quando non viene bloccato l'invio dalla actionable notification
   domain: automation
   source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_actionable_app/centro_notifiche_actionable.yaml
   input:
@@ -12,7 +12,7 @@ blueprint:
       name: Trigger Entity
       description: |
         Entity to listen for state changes on.
-        Enità da monitoare per l'invio della notifica
+        Enità da monitorare per l'invio della notifica
       selector:
         entity:
     desired_state:
@@ -24,12 +24,36 @@ blueprint:
     notification_services:
       name: Notification services
       description: |
-        Mobile and Telegram notification service configred in Home Assistant
+        Mobile and Telegram notification service configured in Home Assistant
         Serivzi di notifica Mobile App e Telegram (esempio: "notify.mi9, notify.telegram")
       default: false
       selector:
         text:
           type: text
+    last_alexa:
+      name: Last Alexa media player 
+      description: |
+        Use last Alexa media player 
+        Utilizza l'ultimo media player Alexa
+      default: false
+      selector:
+        boolean:
+    voice_alexa:
+      name: Alexa voice
+      description: |
+        Voice for Alexa Actionable
+        Voce selezionata per le notifiche "actionable" di Alexa
+      selector:
+        state:
+          entity_id: input_select.notifier_alexa_voice
+    entity_alexa:
+      name: Alexa media player
+      description: |
+        Alexa media player
+        Scelta del media player Alexa
+      selector:
+        state:
+          entity_id: select.notifier_player_alexa
     title:
       name: Message Title
       description: |
@@ -85,6 +109,10 @@ variables:
   desired_state: !input desired_state
   id: "{{trigger_entity}}-{{desired_state}}-notification"
   ack_mobile: "{{'ack-'+id}}"
+  last_alexa: !input last_alexa
+  voice: !input voice_alexa
+  entity_alexa: !input entity_alexa
+  media_player: "{{ 'last_alexa' if last_Alexa == 'on' else entity_alexa }}"
   title: !input title
   message: !input message
   dismiss: !input dismiss
@@ -96,29 +124,63 @@ action:
   - alias: "Repeat the sequence UNTIL the conditions are true"
     repeat:
       sequence:
-        - service: script.my_notify
-          data:
-            title: "{{title}}"
-            message: "{{message}}"
-            notify: "{{notify}}"
-            mobile: 
-              tag: "{{id}}"
-              group: "{{id}}"
-              # Android Specific
-              ttl: "{{ iif(critical, 0, 3600000) }}"
-              priority: "{{ iif(critical, 'high', 'normal') }}"
-              # iOS Specific
-              push:
-                interruption-level: "{{ iif(critical, 'critical', 'active') }}"
-              # Actions
-              actions:
-                - action: "{{ack_mobile}}"
-                  title: "{{dismiss}}"
-                  destructive: true
-            telegram:
-              # Actions
-              inline_keyboard:
-              -  "🔧 {{ dismiss }}:/{{ack_mobile}}"
+        - if:
+            - alias: "verifico se solo telegram/mobile o anche Alexa"
+              condition: template
+              value_template: "{{ media_player in ['unknown','unavailable','None'] }}"
+          then:
+            - service: script.my_notify
+              data:
+                title: "{{title}}"
+                message: "{{message}}"
+                notify: "{{notify}}"
+                mobile: 
+                  tag: "{{id}}"
+                  group: "{{id}}"
+                  # Android Specific
+                  ttl: "{{ iif(critical, 0, 3600000) }}"
+                  priority: "{{ iif(critical, 'high', 'normal') }}"
+                  # iOS Specific
+                  push:
+                    interruption-level: "{{ iif(critical, 'critical', 'active') }}"
+                  # Actions
+                  actions:
+                    - action: "{{ack_mobile}}"
+                      title: "{{dismiss}}"
+                      destructive: true
+                telegram:
+                  # Actions
+                  inline_keyboard:
+                  -  "🔧 {{ dismiss }}:/{{ack_mobile}}"
+          else:
+            - service: script.my_notify
+              data:
+                title: "{{title}}"
+                message: "{{message}}"
+                notify: "{{notify}}"
+                mobile: 
+                  tag: "{{id}}"
+                  group: "{{id}}"
+                  # Android Specific
+                  ttl: "{{ iif(critical, 0, 3600000) }}"
+                  priority: "{{ iif(critical, 'high', 'normal') }}"
+                  # iOS Specific
+                  push:
+                    interruption-level: "{{ iif(critical, 'critical', 'active') }}"
+                  # Actions
+                  actions:
+                    - action: "{{ack_mobile}}"
+                      title: "{{dismiss}}"
+                      destructive: true
+                telegram:
+                  # Actions
+                  inline_keyboard:
+                    -  "🔧 {{ dismiss }}:/{{ack_mobile}}"
+                alexa:
+                  message: "{{message +', vuoi dismettere la notifica?'}}"
+                  voice: "{{voice}}"
+                  event_id: "{{ack_mobile}}"
+                  media_player: "{{media_player}}"
         - wait_for_trigger:
           - platform: event
             event_type: mobile_app_notification_action
@@ -128,6 +190,10 @@ action:
             event_type: telegram_callback
             event_data:
               data:  "/{{ack_mobile}}"
+          - platform: event
+            event_type: alexa_actionable_notification
+            event_data:
+              event_id: ResponseYes
           timeout:
             minutes: !input interval
       until: "{{  repeat.index > alert_number-1 or wait.remaining > 0 }}"
