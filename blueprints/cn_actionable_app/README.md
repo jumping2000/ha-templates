@@ -1,4 +1,4 @@
-## 📱 Centro Notifiche - Mobile and Telegram Actionable Notifications📣
+## 📱 Centro Notifiche - Mobile, Telegram and Alexa Actionable Notifications📣
 <br>
 
 | Requirements | Version |
@@ -10,9 +10,9 @@
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjumping2000%2Fha-templates%2Fblob%2Fmain%2Fblueprints%2Fcn_actionable_app%2Fcentro_notifiche_actionable.yaml)
 
 ## Mobile and Telegram Actionable Notifications
-This blueprint will send a defined number of notifications to your device or Telegram app at a pre-defined interval until it has been acknowledged via the actionable notification.
+This blueprint will send a defined number of notifications to your device or Telegram app or Alexa at a pre-defined interval until it has been acknowledged via the actionable notification.
 <br><br>
-Il blueprint invia un numero predefinito di notifiche via Companion App o Telegram fino a quando non viene bloccato dalla actionable notification.
+Il blueprint invia un numero predefinito di notifiche via Companion App o Telegram oppure Alexa fino a quando non viene bloccato dalla actionable notification.
 <br><br>
 
 **Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
