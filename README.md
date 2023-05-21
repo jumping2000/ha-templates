@@ -5,6 +5,7 @@
 | [Jinja](/custom_templates) |
 | [Blueprints](/blueprints) | 
 | [Appdaemon](/appdaemon) | 
+| [Lovelace Card](/card) | 
 
 ![](https://komarev.com/ghpvc/?username=jumping2000&style=flat-square)
 
