@@ -7,6 +7,19 @@
 
 ## Hardware parameters 
 
+## User Interface
+
+<table align="center">
+	<tr>
+	    <th>Desktop</th>
+      <th>Mobile</th>
+	</tr>
+  <tr>
+      <td><div align=center><img width = "400" src="apex_1.png"/></div></td>
+      <td><div align=center><img width = 400 src="apex_2.png"/></div></td>
+  </tr>
+</table>
+
 The card displays:
 - CPU occupation
 - CPU temperature
