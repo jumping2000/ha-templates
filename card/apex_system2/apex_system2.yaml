@@ -1,0 +1,303 @@
+  - type: grid
+    columns: 2
+    square: false #true
+    cards:
+      ### CPU % ###    
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        experimental:
+          color_threshold: true
+        apex_config:
+          legend:
+            onItemHover:
+              highlightDataSeries: false
+            show: false
+          chart:
+            fontFamily: Segoe UI
+            height: 250px
+            # width: 250px
+          plotOptions:
+            radialBar:
+              startAngle: -180
+              endAngle: 180
+              dataLabels:
+                name:
+                  show: true
+                  offsetY: 55
+                value:
+                  show: true
+                  offsetY: 5
+                  fontSize: 40px
+                  fontWeight: 600
+                  color: gray
+                total:
+                  show: true
+                  fontSize: 20px
+                  fontWeight: 600
+                  label: CPU Load
+                  color: gray
+                  formatter: |
+                    EVAL:(w) => {
+                      return w.globals.seriesTotals + '%';
+                    }
+              hollow:
+                size: 72%
+                margin: 0
+                image: >-
+                  data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'%3E%3Cpath d='M17,17H7V7H17M21,11V9H19V7C19,5.89 18.1,5 
+                  17,5H15V3H13V5H11V3H9V5H7C5.89,5 5,5.89 5,7V9H3V11H5V13H3V15H5V17A2,2 0 0,0 
+                  7,19H9V21H11V19H13V21H15V19H17A2,2 0 0,0 19,17V15H21V13H19V11M13,13H11V11H13M15,9H9V15H15V9Z' 
+                  fill='%23a8a7a7'/%3E%3C/svg%3E
+                imageWidth: 50
+                imageHeight: 50
+                imageOffsetY: -45
+                imageClipped: false
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.24
+              track:
+                show: true
+                background: rgba(60, 60, 60, 0.8)
+                strokeWidth: 155%
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.35
+          stroke:
+            dashArray: 4
+            lineCap: butt
+        series:
+          - entity: sensor.processor_use
+            color_threshold:
+              - value: 10
+                color: '#264b96'
+              - value: 28
+                color: '#27b376'
+              - value: 48
+                color: '#f9a73e'
+              - value: 65
+                color: '#bf212f'     
+      ### CPU TEMP ###      
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        apex_config:
+          legend:
+            onItemHover:
+              highlightDataSeries: false
+            show: false
+          chart:
+            height: 250px
+            fontFamily: Segoe UI #SF Display
+          plotOptions:
+            radialBar:
+              startAngle: -180
+              endAngle: 180
+              dataLabels:
+                name:
+                  show: true
+                  offsetY: 55
+                value:
+                  show: true
+                  offsetY: 5
+                  fontSize: 40px
+                  fontWeight: 600
+                  color: gray
+                total:
+                  show: true
+                  fontSize: 21px
+                  fontWeight: 600
+                  label: CPU Temp
+                  color: gray
+                  formatter: |
+                    EVAL:(w) => {
+                      return w.globals.seriesTotals + '°';
+                    }
+              hollow:
+                size: 72%
+                image: >-
+                  data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 283.5 283.5'%3E%3Cpath d='M152.1 145.4v-26.9a10.07
+                  10.07 0 1 0-20.2 0v26.9c-7.4 5.6-8.9 16.1-3.4 23.5 5.6 7.4 16.1
+                  8.9 23.5 3.4s8.9-16.1 3.4-23.5c-.9-1.4-2.1-2.5-3.3-3.4M142
+                  115.1a3.37 3.37 0 0 1 3.4 3.4v10.1h-6.7v-10.1c-.1-1.9 1.4-3.4
+                  3.3-3.4z' fill='%23a8a7a7'/%3E%3C/svg%3E
+                imageWidth: 150
+                imageHeight: 150
+                imageOffsetY: -50
+                imageClipped: false
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.24
+              track:
+                show: true
+                background: rgba(60, 60, 60, 0.8)
+                strokeWidth: 155%
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.35
+          stroke:
+            dashArray: 4
+            lineCap: butt
+        series:
+          - entity: sensor.cpu_temperature
+            color_threshold:
+              - value: 10
+                color: '#264b96'
+              - value: 28
+                color: '#27b376'
+              - value: 48
+                color: '#f9a73e'
+              - value: 65
+                color: '#bf212f'
+      ### MEM %###      
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        apex_config:
+          legend:
+            onItemHover:
+              highlightDataSeries: false
+            show: false
+          chart:
+            height: 250px
+            fontFamily: Segoe UI #SF Display
+          plotOptions:
+            radialBar:
+              startAngle: -180
+              endAngle: 180
+              dataLabels:
+                name:
+                  show: true
+                  offsetY: 55
+                value:
+                  show: true
+                  offsetY: 5
+                  fontSize: 40px
+                  fontWeight: 600
+                  color: gray
+                total:
+                  show: true
+                  fontSize: 21px
+                  fontWeight: 600
+                  label: RAM Use
+                  color: gray
+                  formatter: |
+                    EVAL:(w) => {
+                      return w.globals.seriesTotals + '%';
+                    }
+              hollow:
+                size: 72%
+                image: >-
+                  data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 283.5 283.5'%3E%3Cpath d='M117.3
+                  109.2h48.8v4.1h12.2v8.1h-12.2v8.1h12.2v8.1h-12.2v8.1h12.2v8.1h-12.2v8.1h12.2v8.1h-12.2v4.1h-48.8V170h-12.2v-8.1h12.2V154h-12.2v-8.1h12.2v-8.1h-12.2v-8.1h12.2v-8.1h-12.2v-8.1h12.2v-4.3m20.4
+                  44.8v12.2h4.1V154h-4.1m8.1 0v12.2h4.1V154h-4.1m8.2
+                  0v12.2h4.1V154H154z' fill='%23a8a7a7'/%3E%3C/svg%3E
+                imageWidth: 118
+                imageHeight: 118
+                imageOffsetY: -50
+                imageClipped: false
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.24
+              track:
+                show: true
+                background: rgba(60, 60, 60, 0.8)
+                strokeWidth: 155%
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.35
+          stroke:
+            dashArray: 4
+            lineCap: butt
+        series:
+          - entity: sensor.memory_use_percent
+            color_threshold:
+              - value: 10
+                color: '#264b96'
+              - value: 28
+                color: '#27b376'
+              - value: 48
+                color: '#f9a73e'
+              - value: 65
+                color: '#bf212f'
+      ### HD %###          
+      - type: custom:apexcharts-card
+        chart_type: radialBar
+        apex_config:
+          legend:
+            onItemHover:
+              highlightDataSeries: false
+            show: false
+          chart:
+            height: 250px
+            fontFamily: Segoe UI #SF Display
+          plotOptions:
+            radialBar:
+              startAngle: -180
+              endAngle: 180
+              dataLabels:
+                name:
+                  show: true
+                  offsetY: 55
+                value:
+                  show: true
+                  offsetY: 5
+                  fontSize: 40px
+                  fontWeight: 600
+                  color: 'gray'
+                total:
+                  show: true
+                  fontSize: 21px
+                  fontWeight: 600
+                  label: HD Use
+                  color: 'gray'
+                  formatter: |
+                    EVAL:(w) => {
+                      return w.globals.seriesTotals + '%';
+                    }
+              hollow:
+                size: 72%
+                image: >-
+                  data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'%3E%3Cpath d='M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 
+                  0,1 4,20V4A2,2 0 0,1 6,2M12,4A6,6 0 0,0 6,10C6,13.31 8.69,16 12.1,16L11.22,13.77C10.95,13.29 
+                  11.11,12.68 11.59,12.4L12.45,11.9C12.93,11.63 13.54,11.79 13.82,12.27L15.74,14.69C17.12,13.59 
+                  18,11.9 18,10A6,6 0 0,0 12,4M12,9A1,1 0 0,1 13,10A1,1 0 0,1 12,11A1,1 0 0,1 11,10A1,1 0 0,1 
+                  12,9M7,18A1,1 0 0,0 6,19A1,1 0 0,0 7,20A1,1 0 0,0 8,19A1,1 0 0,0 7,18M12.09,13.27L14.58,19.58L17.17,18.08L12.95,12.77L12.09,13.27Z' 
+                  fill='%23a8a7a7'/%3E%3C/svg%3E
+                imageWidth: 50
+                imageHeight: 50
+                imageOffsetY: -45
+                imageClipped: false
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.24
+              track:
+                show: true
+                background: rgba(60, 60, 60, 0.8)
+                strokeWidth: 155%
+                dropShadow:
+                  enabled: true
+                  blur: 10
+                  opacity: 0.35
+          stroke:
+            dashArray: 4
+            lineCap: butt
+        series:
+          - entity: sensor.disk_use_percent_home
+            color_threshold:
+              - value: 10
+                color: '#264b96'
+              - value: 28
+                color: '#27b376'
+              - value: 48
+                color: '#f9a73e'
+              - value: 65
+                color: '#bf212f'
