@@ -1,6 +1,7 @@
 | Lovelace Card | Descrizione |
 | :---: | --- |
-| [Apex Card System](apex_system/README.md) | Lovelace Card per il controllo di T°,CPU,HD,RAM |
+| [Apex Card HW System](apex_system/README.md) | Lovelace Card per il controllo di T°,CPU,HD,RAM |
+| [Apex Card HW System 2](apex_system2/README.md) | Lovelace Card per il controllo di T°,CPU,HD,RAM |
 
 <br><br>
 
