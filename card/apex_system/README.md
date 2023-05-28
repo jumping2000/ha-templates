@@ -11,8 +11,8 @@
 
 <table align="center">
 	<tr>
-	    <th>Desktop</th>
-      <th>Mobile</th>
+	  <th><center> 🖥 Desktop 🖥<center></th>
+          <th><center>📱 Mobile 🔋<center></th>
 	</tr>
   <tr>
       <td><div align=center><img width = "400" src="apex_1.png"/></div></td>
