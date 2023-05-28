@@ -1,4 +1,4 @@
-## 🖥 APEX Card - Home Assistant hardware system 🧑‍🏭
+## 🖥 Home Assistant Hardware Info 🧑‍🏭
 <br>
 
 | Requirements | Version |
