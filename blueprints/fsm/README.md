@@ -11,7 +11,7 @@
 ## FSM Lite for appliances
 This blueprint will use a FSM (finite state machine with 4 states) to simulate your appliance like washing machine, dishwasher, oven, dryer. It also offers a complete set of notification with Telegram, Companion app, Google Nest and Alexa. Used by following Home Assistant packages :
 1. [Lavatrice](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavatrice.md) (Washing Machine)
-2. Lavastoviglie (Dishwasher)
+2. [Lavastoviglie](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavastoviglie.md) (Dishwasher)
 3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md) (Oven)
 4. Asciugatrice (Dryer)
 
@@ -24,7 +24,7 @@ Il blueprint realizza una macchina a stati finiti (4 stati) che simula il compor
 4. Asciugatrice
 
 
-This a typical configuration / Configurazione tipica
+Here a typical diagram / Diagramma degli stati:
 <br>
 ```mermaid
 stateDiagram-v2
