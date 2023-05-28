@@ -68,17 +68,19 @@
           stroke:
             dashArray: 4
             lineCap: butt
+        all_series_config:
+          color_threshold:
+            - value: 95
+              color: '#bf212f'
+            - value: 48
+              color: '#f9a73e'
+            - value: 28
+              color: '#27b376'
+            - value: 10
+              color: '#264b96'
         series:
-          - entity: sensor.processor_use
-            color_threshold:
-              - value: 10
-                color: '#264b96'
-              - value: 28
-                color: '#27b376'
-              - value: 48
-                color: '#f9a73e'
-              - value: 65
-                color: '#bf212f'     
+          - entity: sensor.processor_use # DA PERSONALIZZARE CON LA PROPRIA ENTITA'
+
       ### CPU TEMP ###      
       - type: custom:apexcharts-card
         chart_type: radialBar
@@ -142,17 +144,18 @@
           stroke:
             dashArray: 4
             lineCap: butt
+        all_series_config:
+          color_threshold:
+            - value: 95
+              color: '#bf212f'
+            - value: 48
+              color: '#f9a73e'
+            - value: 28
+              color: '#27b376'
+            - value: 10
+              color: '#264b96'
         series:
-          - entity: sensor.cpu_temperature
-            color_threshold:
-              - value: 10
-                color: '#264b96'
-              - value: 28
-                color: '#27b376'
-              - value: 48
-                color: '#f9a73e'
-              - value: 65
-                color: '#bf212f'
+          - entity: sensor.cpu_temperature # DA PERSONALIZZARE CON LA PROPRIA ENTITA'
       ### MEM %###      
       - type: custom:apexcharts-card
         chart_type: radialBar
@@ -215,17 +218,18 @@
           stroke:
             dashArray: 4
             lineCap: butt
+        all_series_config:
+          color_threshold:
+            - value: 95
+              color: '#bf212f'
+            - value: 48
+              color: '#f9a73e'
+            - value: 28
+              color: '#27b376'
+            - value: 10
+              color: '#264b96'
         series:
-          - entity: sensor.memory_use_percent
-            color_threshold:
-              - value: 10
-                color: '#264b96'
-              - value: 28
-                color: '#27b376'
-              - value: 48
-                color: '#f9a73e'
-              - value: 65
-                color: '#bf212f'
+          - entity: sensor.memory_use_percent # DA PERSONALIZZARE CON LA PROPRIA ENTITA'
       ### HD %###          
       - type: custom:apexcharts-card
         chart_type: radialBar
@@ -289,15 +293,16 @@
                   opacity: 0.35
           stroke:
             dashArray: 4
-            lineCap: butt
+            lineCap: butt 
+        all_series_config:
+          color_threshold:
+            - value: 95
+              color: '#bf212f'
+            - value: 48
+              color: '#f9a73e'
+            - value: 28
+              color: '#27b376'
+            - value: 10
+              color: '#264b96'
         series:
-          - entity: sensor.disk_use_percent_home
-            color_threshold:
-              - value: 10
-                color: '#264b96'
-              - value: 28
-                color: '#27b376'
-              - value: 48
-                color: '#f9a73e'
-              - value: 65
-                color: '#bf212f'
+          - entity: sensor.disk_use_percent_home # DA PERSONALIZZARE CON LA PROPRIA ENTITA'
