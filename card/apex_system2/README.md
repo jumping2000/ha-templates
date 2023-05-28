@@ -15,12 +15,12 @@
     <th><center>📱 Mobile 🔋<center></th>
 	</tr>
   <tr>
-      <td><div align=center><img width = "400" src="apex_3.png"/></div></td>
+      <td><div align=center><img width = "450" src="apex_3.png"/></div></td>
       <td><div align=center><img width = 400 src="apex_4.png"/></div></td>
   </tr>
 </table>
 
-Tere are four cards ina grid, they display:
+There are four cards in a lovelace grid, they display:
 - CPU occupation
 - CPU temperature
 - RAM memory occupation
