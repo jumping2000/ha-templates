@@ -19,10 +19,23 @@ This blueprint will use a FSM (finite state machine with 4 states) to simulate y
 
 Il blueprint realizza una macchina a stati finiti (4 stati) che simula il comportamento di un elettrodomestico e invia un numero predefinito e configurabile di notifiche via Companion App, Telegram, Google Nest e Alexa. Da utilizzare, personalizzando le varie soglie di potenza, nei seguenti package:
 1. [Lavatrice](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavatrice.md)
-2. Lavastoviglie
+2. [Lavastoviglie](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavastoviglie.md)
 3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md)
 4. Asciugatrice
 
+
+This a typical configuration / Configurazione tipica
+<br>
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> Idle
+  Idle --> Lavaggio POWER/TIME_1
+  Lavaggio --> Risciacquo: POWER/TIME_2
+  Risciacquo --> Lavaggio: POWER/TIME_3
+  Risciacquo --> Asciugatura: POWER/TIME_4
+  Asciugatura --> Idle: TIME_1
+```
 <br>
 
 **Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
