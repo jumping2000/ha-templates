@@ -30,7 +30,7 @@ Here a typical diagram / Diagramma degli stati:
 stateDiagram-v2
   direction LR
   [*] --> Idle
-  Idle --> Lavaggio POWER/TIME_1
+  Idle --> Lavaggio: POWER/TIME_1
   Lavaggio --> Risciacquo: POWER/TIME_2
   Risciacquo --> Lavaggio: POWER/TIME_3
   Risciacquo --> Asciugatura: POWER/TIME_4
