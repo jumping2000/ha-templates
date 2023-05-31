@@ -23,6 +23,33 @@ Il blueprint realizza una macchina a stati finiti (4 stati) che simula il compor
 3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md)
 4. Asciugatrice
 
+In realtà è possibile usare il blueprint anche senza i packages indicati, basta eliminare le entità helper/template non necessarie oppure inserire nel proprio file configuration.yaml le entità necessarie, vediamo un esempio per quest'ultimo caso:
+
+```yaml
+
+  input_select:
+    washing_machine_status:
+      name: Stato Lavatrice
+      options:
+        - Idle
+        - Lavaggio
+        - Risciacquo
+        - Svuotare
+      initial: Idle
+
+  template:
+    - sensor:
+      - name: washing_machine_status
+        state: "{{ states('input_select.washing_machine_status') }}"
+
+  counter:
+    cicli_lavaggio_lavatrice:
+      name: Cicli totali lavatrice
+      step: 1
+      restore: true
+      icon: mdi:counter
+
+```
 
 Here a typical diagram / Diagramma degli stati:
 <br>
@@ -36,7 +63,7 @@ stateDiagram-v2
   Risciacquo --> Asciugatura: POWER/TIME_4
   Asciugatura --> Idle: TIME_1
 ```
-<br>
+<br><br>
 
 **Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
