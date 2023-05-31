@@ -42,7 +42,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (REQUIRED) Cycles counter
       description: |
         Entity counter used to count washing cycles
-        Entità counter che ocnteggia i cicli di lavaggio
+        Entità counter che conteggia i cicli di lavaggio
       selector:
         entity:
           domain: counter
@@ -137,13 +137,13 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       selector:
         number:
           min: 0
-          max: 10
+          max: 30
           unit_of_measurement: minutes
     identificativo:
       name: (REQUIRED) Appliance Name
       description: |
         Appliance Name
-        Identificativo dell'oggetto dell'automazione (Es. Lavatrice).
+        Identificativo dell'oggetto dell'automazione (Es. Lavatrice / Asciugatrice / Lavastoviglie).
       default: "Lavatrice"
       selector:
         text:
