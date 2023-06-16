@@ -1,7 +1,13 @@
+## 🖼 Cards Lovelace 🎨 ##
+
+Visualizzazioni su Lovelace usando alcune card custom. <br><br>
+Implementatios of some custom Lovelace cards.
+
 | Lovelace Card | Descrizione |
 | :---: | --- |
 | [Apex Card HW System](apex_system/README.md) | Card per il controllo di T°,CPU,HD,RAM |
 | [Apex Card HW System 2](apex_system2/README.md) | Card per il controllo di T°,CPU,HD,RAM |
+| [Apex Entities](apex_entities/README.md) | Card per la numerosità delle entità di HA |
 | [Mushroom Update](mushroom_update/README.md) | Card per la segnalazione di update |
 
 <br><br>
