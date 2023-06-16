@@ -3,7 +3,7 @@
 
 | Requirements | Version |
 | :---: | --- |
-| [Mushroom Card](https://github.com/piitaya/lovelace-mushroom) - |
+| [Mushroom Card](https://github.com/piitaya/lovelace-mushroom) | - |
 
 ## Hardware parameters 
 
@@ -27,8 +27,7 @@
 The card displays:
 - Current component version
 - Current and available version
-- Info popupe (tap)
-- Update page (long tap)
+- Info and update popup (tap)
 
 It works in both Lovelace storage and YAML modes.
 
@@ -37,8 +36,7 @@ It works in both Lovelace storage and YAML modes.
 La card visualizza i parametri di:
 - Versione corrent del componente
 - Versione corrente e versione disponibile
-- Popup di informazioni (tap)
-- Pagina per upgrade (tap prolungato)
+- Popup di informazioni e upgrade (tap)
 
 Funziona sia in Lovelace modalità storage che YAML.
 <br>
@@ -68,13 +66,11 @@ Simple card with just one entity
             picture: >
               {{ state_attr(entity,'entity_picture') if
               state_attr(entity,'entity_picture') != none }}
-            hold_action:
-              action: navigate
-              navigation_path: /config/updates
             tap_action:
               action: more-info
 ```
-Using Auto-entities to visulize all components that need updating
+Using custom card [auto-entities](https://github.com/thomasloven/lovelace-auto-entities) to visulize all components that need updating.
+
 ```yaml
     type: custom:auto-entities
     card:
@@ -107,9 +103,6 @@ Using Auto-entities to visulize all components that need updating
             picture: >
               {{ state_attr(entity,'entity_picture') if
               state_attr(entity,'entity_picture') != none }}
-            hold_action:
-              action: navigate
-              navigation_path: /config/updates
             tap_action:
               action: more-info
 ```
