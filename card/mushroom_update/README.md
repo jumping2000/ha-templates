@@ -18,10 +18,10 @@ Mushroom template card to visualize upgrades in HA components
 	</tr>
   <tr>
       <td><div align=center><img width = "400" src="mushroom_white_1.png"/></div></td>
-      <td><div align=center><img width = 400 src="mushroom_black_1.png"/></div></td>
+      <td><div align=center><img width = 400 src="mushroom_white_2.png"/></div></td>
   </tr>
   <tr>
-      <td><div align=center><img width = "400" src="mushroom_white_2.png"/></div></td>
+      <td><div align=center><img width = "400" src="mushroom_black_1.png"/></div></td>
       <td><div align=center><img width = 400 src="mushroom_black_2.png"/></div></td>
   </tr>
 </table>
