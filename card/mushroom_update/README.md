@@ -5,7 +5,9 @@
 | :---: | --- |
 | [Mushroom Card](https://github.com/piitaya/lovelace-mushroom) | - |
 
-## Hardware parameters 
+## Info
+Mushroom template card adattata per la visualizzazione degli aggiornamenti dei vari componenti di HA <br><br>
+Mushroom template card to visualize upgrades in HA components
 
 ## User Interface
 
