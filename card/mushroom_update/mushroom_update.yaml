@@ -1,0 +1,23 @@
+            type: custom:mushroom-template-card
+            entity: update.lovelace_home_feed_card_update ## ESEMPIO / DA PERSONALIZZARE
+            primary: |
+              {{ state_attr(entity,'friendly_name') }}
+            secondary: >-
+              {% if state_attr(entity,'installed_version') ==
+              state_attr(entity,'latest_version') %}
+              {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
+              {% else %} 
+              {{state_attr(entity,'installed_version') }} -> {{
+              state_attr(entity,'latest_version') }} {% endif %}
+            icon: |
+              {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
+            icon_color: >-
+              {% if state_attr(entity,'entity_picture') == none %}
+              {{ 'blue' if (state_attr(entity,'installed_version') ==
+              state_attr(entity,'latest_version')) else 'orange' }}
+              {% endif %}
+            picture: >
+              {{ state_attr(entity,'entity_picture') if
+              state_attr(entity,'entity_picture') != none }}
+            tap_action:
+              action: more-info
