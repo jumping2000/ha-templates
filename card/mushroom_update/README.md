@@ -1,6 +1,8 @@
 ## 🍄 Home Assistant Mushroom Update Card 🔧
 <br>
 
+**Ti piace questa card? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
+
 | Requirements | Version |
 | :---: | --- |
 | [Mushroom Card](https://github.com/piitaya/lovelace-mushroom) | - |
@@ -109,7 +111,7 @@ Using custom card [auto-entities](https://github.com/thomasloven/lovelace-auto-e
               action: more-info
 ```
 
-**Ti piace questo blueprint? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
+**Ti piace questa card? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
 [![Websitebadge]][website] [![Forum][forumbadge]][forum] [![telegrambadge]][telegram] [![facebookbadge]][facebook] 
 
