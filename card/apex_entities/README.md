@@ -1,114 +1,94 @@
-## 🍄 Home Assistant Mushroom Update Card 🔧
+## 🗂 Home Assistant Apex Count Entities Card 🔧
 <br>
 
 **Ti piace questa card? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
 | Requirements | Version |
 | :---: | --- |
-| [Mushroom Card](https://github.com/piitaya/lovelace-mushroom) | - |
+| [Apex Card]([https://github.com/piitaya/lovelace-mushroom]) | - |
 
 ## Info
-Mushroom template card adattata per la visualizzazione degli aggiornamenti dei vari componenti di HA <br><br>
-Mushroom template card to visualize upgrades in HA components
+- Apex card per visualizzare il numero di entità di HA suddivise per dominio
+- Apex e card to visualize total number of entities in HA, divided by domain
 
 ## User Interface
 
 <table align="center">
-	<tr>
-	  <th><center> 🖥 Desktop 🖥<center></th>
-          <th><center>📱 Mobile 🔋<center></th>
-	</tr>
   <tr>
-      <td><div align=center><img width = "400" src="mushroom_white_1.png"/></div></td>
-      <td><div align=center><img width = 400 src="mushroom_white_2.png"/></div></td>
+    <th><center> 🖥 Desktop 🖥<center></th>
+    <th><center>📱 Mobile 🔋<center></th>
   </tr>
   <tr>
-      <td><div align=center><img width = "400" src="mushroom_black_1.png"/></div></td>
-      <td><div align=center><img width = 400 src="mushroom_black_2.png"/></div></td>
+    <td><div align=center><img width = "400" src="apex_entities_1.png"/></div></td>
+    <td><div align=center><img width = "400" src="apex_entities_2.png"/></div></td>
   </tr>
 </table>
 
-The card displays:
-- Current component version
-- Current and available version
-- Info and update popup (tap)
 
-It works in both Lovelace storage and YAML modes.
-
-<br>
-
-La card visualizza i parametri di:
-- Versione corrent del componente
-- Versione corrente e versione disponibile
-- Popup di informazioni e upgrade (tap)
-
-Funziona sia in Lovelace modalità storage che YAML.
+- Funziona sia in Lovelace modalità storage che YAML.
+- It works in both Lovelace storage and YAML modes.
 <br>
 
 ## Esempi / Examples
 
-Simple card with just one entity
-```yaml
-            type: custom:mushroom-template-card
-            entity: update.lovelace_home_feed_card_update
-            primary: |
-              {{ state_attr(entity,'friendly_name') }}
-            secondary: >-
-              {% if state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version') %}
-              {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
-              {% else %} 
-              {{state_attr(entity,'installed_version') }} -> {{
-              state_attr(entity,'latest_version') }} {% endif %}
-            icon: |
-              {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
-            icon_color: >-
-              {% if state_attr(entity,'entity_picture') == none %}
-              {{ 'blue' if (state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version')) else 'orange' }}
-              {% endif %}
-            picture: >
-              {{ state_attr(entity,'entity_picture') if
-              state_attr(entity,'entity_picture') != none }}
-            tap_action:
-              action: more-info
-```
-Using custom card [auto-entities](https://github.com/thomasloven/lovelace-auto-entities) to visulize all components that need updating.
+- Aggiungi questo template sensor per visualizzare le entità
+- Add this template sensor to see the entities
 
 ```yaml
-    type: custom:auto-entities
-    card:
-      type: grid
-      columns: 2
-      square: false
-    card_param: cards
-    filter:
-      include:
-        - domain: update
-          state: 'on'
-          options:
-            type: custom:mushroom-template-card
-            primary: |
-              {{ state_attr(entity,'friendly_name') }}
-            secondary: >-
-              {% if state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version') %}
-              {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
-              {% else %} 
-              {{state_attr(entity,'installed_version') }} -> {{
-              state_attr(entity,'latest_version') }} {% endif %}
-            icon: |
-              {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
-            icon_color: >-
-              {% if state_attr(entity,'entity_picture') == none %}
-              {{ 'blue' if (state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version')) else 'orange' }}
-              {% endif %}
-            picture: >
-              {{ state_attr(entity,'entity_picture') if
-              state_attr(entity,'entity_picture') != none }}
-            tap_action:
-              action: more-info
+  #################################################################
+  #                                                               #
+  #                          TEMPLATE                             #
+  #                                                               #
+  #################################################################
+  template:
+    - sensor:
+      ###################
+      - name: Count Entities
+        state: "{{ states | count }}"
+        attributes:
+          automation: >-
+            {{ states.automation | count }}
+          automation_ON: >-
+            {{ states.automation | selectattr('state', 'eq', 'on') | list | count }}
+          binary_sensor: >-
+            {{ states.binary_sensor | count }}
+          camera: >-
+            {{ states.camera | count }}
+          climate: >-
+            {{ states.climate | count }}
+          device_tracker: >-
+            {{ states.device_tracker | count }}
+          group: >-
+            {{ (states.group | count + states.light | selectattr ('entity_id', 'in', integration_entities('group')) | list | count) | int(default=0) }}
+          input_helper: >-
+            {{ (states.input_boolean | count + states.input_datetime | count + states.input_number | count +
+               states.input_select | count + states.input_text | count) | int(default=0) }}
+          media_player: >-
+            {{ states.media_player | count }}
+          light: >-
+            {{ states.light | rejectattr ('entity_id', 'in', integration_entities('group')) | list | count }}
+          light_ON: >-
+            {{ states.light | rejectattr ('entity_id', 'in', integration_entities('group')) | selectattr('state', 'eq', 'on') | list | count }}
+          alert: >-
+            {{ states.alert | count }}
+          timer: >-
+            {{ states.timer | count }} 
+          number: >-
+            {{ states.number | count }}
+          select: >-
+            {{ states.select | count }}
+          update: >-
+            {{ states.update | count }}  
+          scene: >-
+            {{ states.scene | count }}
+          script: >-
+            {{ states.script | count }}
+          sensor: >-
+            {{ states.sensor | count }}
+          switch: >-
+            {{ states.switch | count }}
+          zone: >-
+            {{ states.zone | count }}
 ```
 
 **Ti piace questa card? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
