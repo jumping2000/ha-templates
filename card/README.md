@@ -7,7 +7,7 @@ Implementatios of some custom Lovelace cards.
 | :---: | --- |
 | [Apex Card HW System](apex_system/README.md) | Card per il controllo di T°,CPU,HD,RAM |
 | [Apex Card HW System 2](apex_system2/README.md) | Card per il controllo di T°,CPU,HD,RAM |
-| [Apex Entities](apex_entities/README.md) | CArd per visualizzaare il numero di entità |
+| [Apex Entities](apex_entities/README.md) | Card per visualizzaare il numero di entità |
 | [Mushroom Update](mushroom_update/README.md) | Card template per la segnalazione di update |
 
 <br><br>
