@@ -1,11 +1,11 @@
-## 🗂 Home Assistant Apex Count Entities Card 🔧
+## 🗂 Home Assistant Count Entities Card 🔧
 <br>
 
 **Ti piace questa card? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
 | Requirements | Version |
 | :---: | --- |
-| [Apex Card]([https://github.com/piitaya/lovelace-mushroom]) | - |
+| [Apex Card](https://github.com/piitaya/lovelace-mushroom) | - |
 
 ## Info
 - Apex card per visualizzare il numero di entità di HA suddivise per dominio
