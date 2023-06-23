@@ -10,7 +10,7 @@ Implementatios of some custom Lovelace cards.
 | [Apex Entities](apex_entities/README.md) | Card per visualizzaare il numero di entità |
 | [Mushroom Update](mushroom_update/README.md) | Card template per la segnalazione di update |
 
-<br><br>
+<br>Basate su elaborazioni di vario materiale trovato in rete<br>
 
 **Ti piacciono questi blueprints? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 
