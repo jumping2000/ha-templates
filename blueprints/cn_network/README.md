@@ -13,9 +13,16 @@
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjumping2000%2Fha-templates%2Fblob%2Fmain%2Fblueprints%2Fcn_network%2Fcn_network.yaml)
 
 ## Network  Notifications - Mobile, Telegram, Alexa, Google & Centro Notifiche
-This blueprint will send notifications about network event to your device or app or domotic assistant (Alexa & Google) via standard Home Assistant integration or through the fantastic <b>Centro Notifiche</b>.
+This blueprint will send notifications about network event to your device or app or domotic assistant (Alexa & Google) via standard Home Assistant integration or through the fantastic <b>[Centro Notifiche](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon)</b>.
 <br><br>
-Il blueprint invia notifiche relative ad eventi di rete attraverso o alcune integrazioni di notifica di Home Assisstant (Mobile, Telegram Google e Alexa)o attraverso il fantastico Centro Notifiche.
+Features:
+- send notifications about changes in upload and download speeds (through Speedtest integration or similar)
+- sending notifications about changes in ping response time (through Speedtest integration or similar)
+- sending notifications related to binary_sensor off status based on ping platform
+- sending notifications related to IP address changes
+- sending notifications related to the reload of the Speedtest integration
+
+Il blueprint invia notifiche relative ad eventi di rete attraverso le integrazioni di notifica di Home Assistant (Mobile, Telegram Google e Alexa) oppure attraverso il fantastico <b>[Centro Notifiche](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon)</b>.
 Vediamo cosa è possibile fare:
 - invio notifiche relative a variazioni delle velocità di upload e download (attraverso integrazione Speedtest o simili)
 - invio notifiche relative a variazioni dei tempi di risposta del ping (attraverso integrazione Speedtest o simili)
