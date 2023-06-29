@@ -1,7 +1,7 @@
 ## 📱 Centro Notifiche and not only - Network Notification📣
 <br>
 
-| Reccomended | Version/Install |
+| Recommended | Version/Install |
 | :---: | --- | 
 | **[CN Appdemon](https://github.com/jumping2000/notifier)** | > 2023.4.5 |
 | **[CN Package](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon)** | > 4.0.0 |
