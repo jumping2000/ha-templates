@@ -1,0 +1,416 @@
+blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
+  name: Network Notification
+  description: > 
+    Blueprint with info about WAN link - Notifications with Mobile, Telegram, Alexa, Google Home/Nest or Centro Notifiche
+
+    Blueprint con notifica delle informazioni relative alla connessione dati WAN: 
+    - notifica se indirizzo IP WAN cambia
+    - monitora il throughput del collegamento in upload e download 
+    - effettua il reload dell'integrazione speedtest se diventa "unavailable"
+
+    Authors [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
+    Date Started 01/11/2019 - Updated 20/05/2023
+
+  domain: automation
+  author: https://github.com/jumping2000/
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/network_notification/network_notification.yaml
+  input:
+    ###################################
+    throughput_upload:
+      name: (REQUIRED) Throughput Upload Sensor
+      description: |
+        The throughput upload entity 
+        Sensore che misura il throughput (velocità) in upload della connessione
+        Es. sensor.speedtest_upload
+      selector:
+        entity:
+          domain: sensor
+    throughput_download:
+      name: (REQUIRED) Throughput Download Sensor
+      description: |
+        The throughput upload entity 
+        Sensore che misura il throughput (velocità) in upload della connessione
+        Es. sensor.speedtest_download
+      selector:
+        entity:
+          domain: sensor
+    threshold_throughput_upload:
+      name: (REQUIRED) Threshold upload
+      description: |
+        Threshold below it sends a notification
+        Soglia sotto la quale inviare una notifica
+      default: 10
+      selector: &throughput_threshold
+        number:
+          min: 0
+          max: 1000
+          unit_of_measurement: Mbit/s
+    threshold_throughput_download:
+      name: (REQUIRED) Threshold download
+      description: |
+        Threshold below it sends a notification
+        Soglia sotto la quale inivare una notifica
+      default: 10
+      selector: *throughput_threshold
+    external_ip:
+      name: (REQUIRED) IP external sensor
+      description: |
+        Entity with public IP address
+        Entità sensor con il proprio indirizzo IP pubblico
+      selector:
+        entity:
+          domain: sensor
+    speedtest_integration:
+      name: Speedtest ID
+      description: |
+        ID of speedtest integration
+        Identificativo dell'integrazion espeedtest
+      default:
+      selector:
+        text:
+          type: text
+    speedtest_restart:
+      name: Minutes after restart integration Speedtest
+      description: |
+        Time threshold after which we restart the integration
+        Soglia di tempo oltre la quale riavviare l'integrazione
+      default: 3
+      selector:
+        number:
+          max: 20
+          min: 0
+          unit_of_measurement: MM
+    speedtest_ping:
+      name: Speedtest Ping sensor
+      description: |
+        Speedtest Ping entity
+        Entità Speedtest Ping
+      default:
+      selector:
+        entity:
+          domain: sensor
+    speedtest_upload:
+      name: Speedtest upload sensor
+      description: |
+        Speedtest upload entity
+        Entità Speedtest upload
+      default:
+      selector:
+        entity:
+          domain: sensor
+    speedtest_download:
+      name: Speedtest download sensor
+      description: |
+        Speedtest download entity
+        Entità Speedtest download
+      default:
+      selector:
+        entity:
+          domain: sensor
+#################################################
+    mobile_device:
+      name: Mobile Device
+      description: |
+        The device must run the official Home Assistant app to receive notifications.
+        Nome dello smartphone con App di Home Assistant
+      default:
+      selector:
+        device:
+          integration: mobile_app
+    critical:
+      name: (Optional) Critical Notification
+      description: |
+        Send as a critical notification to the mobile device.
+        Invio di una notifica di tipo critico allo smartphone
+      default:
+      selector:
+        boolean:
+    notify_telegram:
+      name: Telegram notification service
+      description: |
+        Send notification with Telegram
+        Servizio di notifica Telegram (es. notify.telegram)
+      default:
+      selector:
+        text:
+          type: text
+    media_player_google:
+      name: Media Player Google
+      description: |
+        Send TTS notification with Google Nest
+        Media player per notifiche TTS Google
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: cast
+              domain: media_player
+      default: []
+    media_player_alexa:
+      name: Media Player Alexa
+      description: |
+        Send TTS notification with Alexa
+        Media player per notifiche TTS Alexa
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: alexa_media
+              domain: media_player
+      default: []
+
+    volume_level:
+      name: (Optional) Volume Level
+      description: |
+        Volume level for audio notification
+        Livello del volume per Alexa e Google Nest/Home 
+      default: 30
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    ###################################
+    use_centro_notifiche:
+      name: (Optional) Use Centro Notifiche
+      description: |
+        [OPTIONAL]  Use Centro Notifiche for notification services
+        Usa il Centro Notifiche 
+      default:
+      selector:
+        boolean:
+    notification_services:
+      name: Notification services
+      description: |
+        Mobile, Telegram or other notification service configured with Centro Notifiche
+        Serivzi di notifica Mobile App, Telegram o altro configurati nel Centro Notifiche
+      default: []
+      selector:
+        state:
+          entity_id: input_select.notifier_text_notify
+    ###################################
+    automations_off:
+      name: (Optional) Automations Off 
+      description: |
+        [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
+        Input boolean che abiita/disabilita l'automazione
+      default:
+      selector:
+        entity:
+          domain: input_boolean
+          multiple: false
+    debug_on:
+      name: (Optional) Debug Mode On
+      description: |
+        [OPTIONAL] System Logging 
+        Raccolta log del blueprint nel file di log di Home Assistant
+      default:
+      selector:
+        boolean:
+#################################################
+variables:
+  #####################################
+  external_ip: !input external_ip
+  speedtest_integration: !input speedtest_integration
+  speedtest_restart: !input speedtest_restart
+  speedtest_upload: !input speedtest_upload
+  speedtest_download: !input speedtest_download
+  #####################################
+  automations_off: !input automations_off
+  debug_on: !input debug_on
+  #####################################
+  _volume_level: !input volume_level
+  volume_level: "{{ (_volume_level /100)|float if _volume_level != None else 0.2 }}"
+  notify: !input notification_services
+  use_cn: !input use_centro_notifiche
+  #####################################
+  critical: !input critical 
+  _mobile_device: !input mobile_device
+  mobile_device: "{{ _mobile_device if _mobile_device != None else 'a0' }}"
+  notify_telegram: !input notify_telegram
+  media_player_google: !input  media_player_google
+  media_player_alexa: !input  media_player_alexa
+#################################################
+mode: queued
+max: 20
+max_exceeded: silent
+trigger_variables:
+  _speedtest_ping: !input speedtest_ping
+  speedtest_ping: "{{ _speedtest_ping if states[_speedtest_ping] != None else 0 }}"
+  throughput_upload: !input throughput_upload
+  throughput_download: !input throughput_download
+  threshold_throughput_upload: !input threshold_throughput_upload
+  threshold_throughput_download: !input threshold_throughput_download
+trigger:
+  - platform: template
+    value_template: "{{ states(throughput_download)|float < threshold_throughput_download|float }}"
+    for: "00:00:10"
+    id: download_speed_down
+  - platform: template
+    value_template: "{{ states(throughput_upload)|float < threshold_throughput_upload|float }}"
+    for: "00:00:10"
+    id: upload_speed_down
+  - platform: template
+    value_template: "{{ states(throughput_download)|float > threshold_throughput_download|float }}"
+    for: "00:00:10"
+    id: download_speed_up
+  - platform: template
+    value_template: "{{ states(throughput_upload)|float > threshold_throughput_upload|float }}"
+    for: "00:00:10"
+    id: upload_speed_up
+  - platform: state
+    entity_id: !input external_ip
+    id: 'external_ip'
+  - platform: template
+    value_template: "{{ False if speedtest_ping == 0 else (states[speedtest_ping] == 'unavailable') }}"
+    for: 
+      minutes: "{{ speedtest_restart }}"
+    id: 'restart_speedtest'
+#### CONDITION ####
+condition:
+  - condition: template
+    value_template:
+      "{{ true if automations_off == none else is_state ( automations_off, 'off' ) }}"
+#### ACTION #####
+action:
+  # - service: persistent_notification.create
+  #   data:
+  #     message: "{{notification_services}}"
+  #####################################
+  - choose:
+    - alias: threshold below
+      conditions: "{{ trigger.id in ['download_speed_down', 'upload_speed_down'] }}"
+      sequence:
+        - variables:
+            message: "Velocità di {{ 'download' if trigger.id == 'download_speed_down' else 'upload' }} della connessione Internet sotto soglia e pari a {{ states(throughput_download) if trigger.id == 'download_speed_down' else states(throughput_upload) }} Mbps"
+        - &messaggio-stato
+          choose:
+            - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_alexa) }}"
+              sequence: 
+                - service: script.my_notify
+                  data:
+                    title: "-- Attenzione --"
+                    message: "{{message}}"
+                    notify: "{{notify}}"
+                    google:
+                      media_player: "{{media_player_google}}"
+                    alexa:
+                      media_player: "{{media_player_alexa}}"
+            - conditions: "{{ use_cn and (not not media_player_google) }}"
+              sequence: 
+                - service: script.my_notify
+                  data:
+                    title: "-- Attenzione --"
+                    message: "{{message}}"
+                    notify: "{{notify}}"
+                    google:
+                      media_player: "{{media_player_google}}"
+            - conditions: "{{ use_cn and (not not media_player_alexa) }}"
+              sequence: 
+                - service: script.my_notify
+                  data:
+                    title: "-- Attenzione --"
+                    message: "{{message}}"
+                    notify: "{{notify}}"
+                    alexa:
+                      media_player: "{{media_player_alexa}}"
+            - conditions: "{{ use_cn }}"
+              sequence: 
+                - service: script.my_notify
+                  data:
+                    title: "-- Attenzione --"
+                    message: "{{message}}"
+                    notify: "{{notify}}"
+          default:
+            - if:
+                condition: template
+                value_template: "{{ not not mobile_device }}"
+              then:
+                - device_id: "{{ mobile_device }}"
+                  domain: mobile_app
+                  type: notify
+                  title: "-- Attenzione --"
+                  message: "{{ message }}"
+                  data:
+                    tag: "network_notification"
+                    group: "{{ id }}"
+                    # Android Specific
+                    ttl: "{{ iif(critical, 0, 3600000) }}"
+                    priority: "{{ iif(critical, 'high', 'normal') }}"
+                    # iOS Specific
+                    push:
+                      interruption-level: "{{ iif(critical, 'critical', 'active') }}"
+            - if:
+                condition: template
+                value_template: "{{ not not notify_telegram }}"
+              then:
+                - service: "{{ notify_telegram }}"
+                  data:
+                    title: "-- Attenzione --"
+                    message: "{{ message }}"
+            - if:
+                condition: template
+                value_template: "{{ not not media_player_google}}"
+              then:
+                - service: media_player.volume_set
+                  data:
+                    volume: "{{ volume_level }}"
+                  target:
+                    entity_id: "{{ media_player_google }}"
+                - delay: "00:00:01"
+                - service: tts.google_translate_say
+                  data:
+                    message: "{{ message }}"
+                    entity_id: "{{ media_player_google }}"
+            - if:
+                condition: template
+                value_template: "{{ not not media_player_alexa }}"
+              then:
+                - service: media_player.volume_set
+                  data:
+                    volume: "{{ volume_level }}"
+                  target:
+                    entity_id: "{{ media_player_alexa }}"
+                - service: notify.alexa_media
+                  data:
+                    message: "{{ message }}"
+                    target: "{{ media_player_alexa }}"
+                    data:
+                      type: announce 
+        - &debug-mode
+          if:
+            - alias: "se DEBUG "
+              condition: template
+              value_template: "{{ debug_on }}"
+          then:
+            - service: system_log.write
+              data:
+                message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
+                level: info
+    - alias: threshold above
+      conditions: "{{ trigger.id in ['download_speed_up',' upload_speed_up']}}"
+      sequence:
+        - variables:
+            message: "Velocità di {{ 'download' if trigger.id == 'download_speed_up' else 'upload' }} della connessione Internet ritornata oltre soglia e pari a {{ states(throughput_download) if trigger.id == 'download_speed_up' else states(throughput_upload) }} Mbps"
+        - *messaggio-stato
+        - *debug-mode
+    - alias: New external IP
+      conditions: "{{ trigger.id == 'external_ip' }}"
+      sequence:
+        - variables:
+            message: "IP pubblico cambiato da {{ trigger.from_state.state }} a {{ trigger.to_state.state }}."
+        - *messaggio-stato
+        - *debug-mode
+    - alias: Restart speedtest integration
+      conditions: "{{ trigger.id == 'restart_speedtest' }}"
+      sequence:
+        - variables:
+            message: "Effettuato il riavvio dell'integrazione Speedtest"
+        - if:
+            condition: template
+            value_template: "{{ not not speedtest_integration }}"
+          then:
+            - choose: []
+              default:
+                - *messaggio-stato
+                - *debug-mode
