@@ -1,0 +1,235 @@
+blueprint:
+  name: Centro Notifiche - Actionable Notification
+  description: |
+    ## Acknowledge Alert Notification
+    This blueprint will send a defined number of notifications to your device or Telegram app or Alexa at a pre-defined interval until it has been acknowledged via the actionable notification.
+    ## Italian ##
+    Il blueprint invia un numero predefinito di notifiche via Companion App o Telegram oppure Alexa fino a quando non viene bloccato l'invio dalla actionable notification
+  domain: automation
+  author: https://github.com/jumping2000/
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_actionable/cn_actionable.yaml
+  input:
+    trigger_entity:
+      name: Trigger Entity
+      description: |
+        Entity to listen for state changes on.
+        Enità da monitorare per l'invio della notifica
+      selector:
+        entity:
+    desired_state:
+      name: Desired State
+      description: |
+        What state should this entity be in to trigger the notification?
+        Stato dell'entità da monitorare per l'invio della notifica
+      default: 'on'
+    notification_services:
+      name: Notification services
+      description: |
+        Mobile, Telegram or other notification service configured with Centro Notifiche
+        Serivzi di notifica Mobile App, Telegram oaltro configurati nel Centro Notifiche
+      default: "null"
+      selector:
+        state:
+          entity_id: input_select.notifier_text_notify
+    last_alexa:
+      name: Last Alexa media player 
+      description: |
+        Use last Alexa media player 
+        Utilizza l'ultimo media player Alexa
+      default: false
+      selector:
+        boolean:
+    voice_alexa:
+      name: Alexa voice
+      description: |
+        Voice for Alexa Actionable
+        Voce selezionata per le notifiche "actionable" di Alexa
+      default: "null"
+      selector:
+        state:
+          entity_id: input_select.notifier_alexa_voice
+    entity_alexa:
+      name: Alexa media player
+      description: |
+        Alexa media player
+        Scelta del media player Alexa
+      default: "null"
+      selector:
+        state:
+          entity_id: select.notifier_player_alexa
+    entity_google:
+      name: Google media player
+      description: |
+        Google Home / Nest media player
+        Scelta del media player Google Home / Nest
+      default: "null"
+      selector:
+        state:
+          entity_id: select.notifier_player_google
+    title:
+      name: Message Title
+      description: |
+        The title of the message to be sent.
+        Titolo del messaggio da inviare
+      default: Inserisci titolo
+    message:
+      name: Message Body
+      description: | 
+        The body of the message to be sent.
+        Corpo del messaggio da inviare
+      default: Inserisci messaggio
+    dismiss_message:
+      name: Dismiss Message
+      description: |
+        What to show as the actionable text in the notification.
+        Testo da mostrare nella "actionable notification"
+      default: Dismetti notifica
+    critical:
+      name: Critical Notification
+      description: |
+        Send as a critical notification to the mobile device
+        Invia una notifica critica alla Compaion app
+      default: false
+      selector:
+        boolean:
+    dismiss_notification:
+      name: Send a dismiss notification
+      description: |
+        Send a dismiss notification at the end
+        Invia una notifica finale che avverta della fine delle notifiche
+      default: false
+      selector:
+        boolean:
+    interval:
+      name: Notification Repeat Interval
+      description: |
+        How long to wait for acknowledgement before re-sending the notification. 
+        Tempo di attesa tra una notifica e l'altra
+      default: 5
+      selector:
+        number:
+          max: 100
+          min: 0
+          unit_of_measurement: minutes
+    alert_number:
+      name: Notification Number
+      description: |
+        Total number of notifications sent
+        Numero totale di notifiche inviate
+      default: 3
+      selector:
+        number:
+          max: 20
+          min: 0
+    ###################################
+    automations_off:
+      name: Automations Off 
+      description: |
+        [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
+        Input boolean che abiita/disabilita l'automazione
+      default:
+      selector:
+        entity:
+          domain: input_boolean
+          multiple: false
+#################################################
+variables:
+  trigger_entity: !input trigger_entity
+  desired_state: !input desired_state
+  notify: !input notification_services
+  id: "{{trigger_entity}}-{{desired_state}}-notification"
+  ack: "{{'ack-'+id}}"
+  last_alexa: !input last_alexa
+  voice: !input voice_alexa
+  media_player_google: !input  entity_google
+  entity_alexa: !input entity_alexa
+  media_player_alexa: "{{ 'last_alexa' if last_Alexa == 'on' else entity_alexa }}"
+  title: !input title
+  message: !input message
+  dismiss_message: !input dismiss_message
+  dismiss_notification: !input dismiss_notification
+  critical: !input critical
+  interval: !input interval
+  alert_number: !input alert_number
+  automations_off: !input automations_off
+#################################################
+mode: single
+trigger:
+  - platform: state
+    entity_id: !input trigger_entity
+    to: !input desired_state
+#### CONDITION ####
+condition:
+  - condition: template
+    value_template:
+      "{{ true if automations_off == none else is_state ( automations_off, 'off' ) }}"
+#### ACTION #####
+action:
+  - alias: "Repeat the sequence UNTIL the conditions are true"
+    repeat:
+      sequence:   
+        - service: script.my_notify
+          data:
+            title: "{{title}}"
+            message: "{{message}}"
+            notify: "{{notify}}"
+            mobile: 
+              tag: "{{id}}"
+              group: "{{id}}"
+              # Android Specific
+              ttl: "{{ iif(critical, 0, 3600000) }}"
+              priority: "{{ iif(critical, 'high', 'normal') }}"
+              # iOS Specific
+              push:
+                interruption-level: "{{ iif(critical, 'critical', 'active') }}"
+              # Actions
+              actions:
+                - action: "{{ack}}"
+                  title: "{{dismiss_message}}"
+                  destructive: true
+            telegram:
+              # Actions
+              inline_keyboard:
+                -  "🔧 {{ dismiss_message }}:/{{ack}}"
+            alexa:
+              message: "{{ message + ', ' + dismiss_message +' ?'}}"
+              voice: "{{voice}}"
+              event_id: "{{ack}}"
+              media_player: "{{media_player_alexa}}"
+            google:
+              message: "{{ message }}"
+              media_player: "{{media_player_google}}"
+        - wait_for_trigger:
+          - platform: event
+            event_type: mobile_app_notification_action
+            event_data:
+              action: "{{ack}}"
+          - platform: event
+            event_type: telegram_callback
+            event_data:
+              data:  "/{{ack}}"
+          - platform: event
+            event_type: alexa_actionable_notification
+            event_data:
+              event_id: '{{ack}}'
+              event_response: ResponseYes
+          timeout:
+            minutes: !input interval
+      until: "{{  repeat.index > alert_number-1 or wait.remaining > 0 }}"
+#### NOTIFICATION AT THE END ####
+  - choose:
+    - alias: "verifico se mandare la dismiss notification"
+      conditions: "{{ dismiss_notification == true }}"
+      sequence:
+        - service: script.my_notify
+          data:
+            title: "-- Attenzione --"
+            notify: "{{notify}}"
+            message: "Notifica periodica cancellata"
+            alexa:
+              message: "Notifica periodica cancellata"
+              voice: "{{voice}}"
+              media_player: "{{media_player_alexa}}"
+            google:
+              message: "Notifica periodica cancellata"
+              media_player: "{{media_player_google}}"
