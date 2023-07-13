@@ -6,10 +6,10 @@
 | [Elettrodomestici Smart Package](https://github.com/jumping2000/ha-packages/tree/main/elettrodomestici_2023) | > 2023.4.4 |
 
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjumping2000%2Fha-templates%2Fblob%2Fmain%2Fblueprints%2Ffsm%2Ffsm_lite.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjumping2000%2Fha-templates%2Fblob%2Fmain%2Fblueprints%2Fcn_fsm%2Fcn_fsm_appliances.yaml)
 
 ## FSM Lite for appliances
-This blueprint will use a FSM (finite state machine with 4 states) to simulate your appliance like washing machine, dishwasher, oven, dryer. It also offers a complete set of notification with Telegram, Companion app, Google Nest and Alexa. Used by following Home Assistant packages :
+This blueprint will use a FSM (finite state machine with 4 states) to simulate your appliance like washing machine, dishwasher, oven, dryer. It also offers a complete set of notification with Telegram, Companion app, Google Nest and Alexa and the fantastic "centro Notifiche". Used by following Home Assistant packages :
 1. [Lavatrice](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavatrice.md) (Washing Machine)
 2. [Lavastoviglie](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavastoviglie.md) (Dishwasher)
 3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md) (Oven)
@@ -17,7 +17,7 @@ This blueprint will use a FSM (finite state machine with 4 states) to simulate y
 
 <br>
 
-Il blueprint realizza una macchina a stati finiti (4 stati) che simula il comportamento di un elettrodomestico e invia un numero predefinito e configurabile di notifiche via Companion App, Telegram, Google Nest e Alexa. Da utilizzare, personalizzando le varie soglie di potenza, nei seguenti package:
+Il blueprint realizza una macchina a stati finiti (4 stati) che simula il comportamento di un elettrodomestico e invia un numero predefinito e configurabile di notifiche via Companion App, Telegram, Google Nest e Alexa, oltre al fantastico "Centro Notifiche". Da utilizzare, personalizzando le varie soglie di potenza, nei seguenti package:
 1. [Lavatrice](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavatrice.md)
 2. [Lavastoviglie](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/lavastoviglie.md)
 3. [Forno](https://github.com/jumping2000/ha-packages/blob/main/elettrodomestici_2023/forno.md)
