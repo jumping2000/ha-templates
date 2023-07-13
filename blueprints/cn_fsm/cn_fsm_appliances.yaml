@@ -1,0 +1,565 @@
+blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
+  name: FSM Elettrodomestici
+  description: '`2023.07.01`
+
+    Blueprint with 4 states finite state machine - Notifications with Mobile, Telegram, Alexa, Google Home/Nest or the fantastic "Centro Notifiche"
+
+    Blueprint che realizza una machina a stati finiti per gestire lo stato degli elettrodomestici:
+    - notifica il cambio di stato dell''elettrodomestico
+    - conta i cicli di lavaggio/asciugatura/cottura etc
+    - monitora il valore totale dell''energia consumata dall''elettrodomestico
+    - monitora il valore totale del tempo di esercizio
+
+    Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
+    Date Started 16/07/2023 - Updated 13/07/2023
+
+    '
+  domain: automation
+  author: https://github.com/jumping2000/
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_fsm/cn_fsm_appliances.yaml
+
+  input:
+    ###################################
+    power_plug:
+      name: (REQUIRED) Appliance Power Consumption
+      description: |
+        The power entity with the power absorption in Watts
+        Sensore di potenza che misura i consumi dell'elettrodomestico
+      selector:
+        entity:
+          domain: sensor
+    energy_plug:
+      name: (REQUIRED) Appliance Energy Consumption
+      description: |
+        Eenrgy sensor that monitors the enrgy absorbed by device 
+        Sensore di energia che misura i consumi dell'elettrodomestico
+      selector:
+        entity:
+          domain: sensor
+    status:
+      name: (REQUIRED) Device Status (input_select)
+      description: |
+        Entity input_select used to monitor the status
+        Entità input_select per il cambio di stato dell'elettrodomestico
+      selector:
+        entity:
+          domain: input_select
+    status_sensor:
+      name: (REQUIRED) Device Status (sensor)
+      description: |
+        Entity sensor used to show the status
+        Entità sensor che pubblica il cambio di stato dell'elettrodomestico
+      selector:
+        entity:
+          domain: sensor
+    counter_sensor:
+      name: (REQUIRED) Cycles counter
+      description: |
+        Entity counter used to count washing/coocking/etc cycles
+        Entità counter che conteggia i cicli di lavaggio/asciugatura/cotture etc
+      selector:
+        entity:
+          domain: counter
+    helper_runtime:
+      name: (REQUIRED) Runtime helper
+      description: |
+        Entity helper used to calculate total runtime
+        Entità helper usata per il calcolo dei tempi totali di utilizzo
+      selector:
+        entity:
+          domain: input_boolean
+    helper_total_energy:
+      name: (REQUIRED) Total energy helper 
+      description: |
+        Entity helper used to calculate total energy consumed by appliance
+        Entità helper usata per il calcolo dell'energia totale consumata dall'elettrodomestico
+      selector:
+        entity:
+          domain: input_number
+    power_start:
+      name: (REQUIRED) Starting power threshold
+      description: |
+        Power threshold above which we assume the appliance has started
+        Soglia di potenza che indica l'avvio dell'elettrodomestico
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: Watt
+    power_end:
+      name: (REQUIRED) Finishing power threshold
+      description: |
+        Power threshold below which we assume the appliance has finished
+        Soglia di potenza che indica la fine del ciclo di lavaggio dell'elettrodomestico
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: Watt
+    power_warm_up:
+      name: (REQUIRED) Power warm-up threshold
+      description: |
+        Power threshold above which we assume the appliance is in warm-up state
+        Soglia di potenza che indica la fase di riscaldamento dell'acqua dell'elettrodomestico
+      default: 300
+      selector:
+        number:
+          min: 100
+          max: 1000
+          unit_of_measurement: Watt
+    power_cool_down:
+      name: (REQUIRED) Power cool-down threshold
+      description: |
+        Power threshold above which we assume the appliance is in cool-down state
+        Inserisci la potenza che indica la fase di fine riscaldamento/lavaggio
+      default: 100
+      selector:
+        number:
+          min: 5
+          max: 200
+          unit_of_measurement: Watt
+    delay_start:
+      name: (REQUIRED) First delay
+      description: |
+        Time spent in the starting state
+        Tempo di attesa nello stato iniziale
+      default: 30
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: seconds
+    delay_middle:
+      name: (REQUIRED) Delay between states
+      description: |
+        Time spent in the intermediate states
+        Tempo di attesa negli stati intermedi
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 10
+          unit_of_measurement: minutes
+    delay_finale:
+      name: (REQUIRED) Last delay
+      description: |
+        Last delay before after which we are again in the initial state
+        Tempo di attesa prima del ritorno allo stato iniziale
+      default: 5
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: minutes
+    appliance:
+      name: (REQUIRED) Appliance Name
+      description: |
+        Appliance Name (Dishwasher/Oven/Wahsing Machine/Dryer or other)
+        appliance dell'oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice).
+      default: "Lavatrice"
+      selector:
+        text:
+          type: text
+#################################################
+    mobile_device:
+      name: Mobile Device
+      description: |
+        The device must run the official Home Assistant app to receive notifications.
+        Nome dello smartphone con App di Home Assistant
+      default:
+      selector:
+        device:
+          integration: mobile_app
+    critical:
+      name: (Optional) Critical Notification
+      description: |
+        Send as a critical notification to the mobile device.
+        Invio di una notifica di tipo critico allo smartphone
+      default:
+      selector:
+        boolean:
+    notify_telegram:
+      name: Telegram notification service
+      description: |
+        Send notification with Telegram
+        Servizio di notifica Telegram (es. notify.telegram)
+      default:
+      selector:
+        text:
+          type: text
+    media_player_google:
+      name: Media Player Google
+      description: |
+        Send TTS notification with Google Nest
+        Media player per notifiche TTS Google
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: cast
+              domain: media_player
+      default: []
+    media_player_alexa:
+      name: Media Player Alexa
+      description: |
+        Send TTS notification with Alexa
+        Media player per notifiche TTS Alexa
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: alexa_media
+              domain: media_player
+      default: []
+    volume_level:
+      name: (Optional) Volume Level
+      description: |
+        Volume level for audio notification
+        Livello del volume per Alexa e Google Nest/Home 
+      default: 30
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    ###################################
+    use_centro_notifiche:
+      name: (Optional) Use Centro Notifiche
+      description: |
+        [OPTIONAL]  Use Centro Notifiche for notification services
+        Usa il Centro Notifiche 
+      default:
+      selector:
+        boolean:
+    notification_services:
+      name: Notification services
+      description: |
+        Mobile, Telegram or other notification service configured with Centro Notifiche
+        Serivzi di notifica Mobile App, Telegram o altro configurati nel Centro Notifiche
+      default: []
+      selector:
+        state:
+          entity_id: input_select.notifier_text_notify
+    ###################################
+    automations_off:
+      name: (Optional) Automations Off 
+      description: |
+        [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
+        Input boolean che abiita/disabilita l'automazione
+      default:
+      selector:
+        entity:
+          domain: input_boolean
+          multiple: false
+    debug_on:
+      name: (Optional) Debug Mode On
+      description: |
+        [OPTIONAL] System Logging 
+        Raccolta log del blueprint nel file di log di Home Assistant
+      default:
+      selector:
+        boolean:
+#################################################
+variables:
+  power_sensor: !input power_plug
+  energy_sensor: !input energy_plug
+  #####################################
+  power_start: !input power_start
+  power_end: !input power_end
+  power_warm_up: !input power_warm_up
+  power_cool_down: !input power_cool_down
+  delay_start: !input delay_start
+  delay_middle: !input delay_middle
+  delay_finale: !input delay_finale
+  status: !input status
+  status_sensor: !input status_sensor
+  stato1: "{{state_attr(status,'options')[0]}}"
+  stato2: "{{state_attr(status,'options')[1]}}"
+  stato3: "{{state_attr(status,'options')[2]}}"
+  stato4: "{{state_attr(status,'options')[3]}}"
+  #####################################
+  automations_off: !input automations_off
+  debug_on: !input debug_on
+  appliance: !input appliance
+  #####################################
+  _volume_level: !input volume_level
+  volume_level: "{{ iif(not not _volume_level, (_volume_level /100)|float, 0.3) }}"
+  notify: !input notification_services
+  use_cn: !input use_centro_notifiche
+  #####################################
+  critical: !input critical
+  _mobile_device: !input mobile_device
+  mobile_device: "{{ iif(not not _mobile_device, mobile_device, 'a0') }}"
+  notify_telegram: !input notify_telegram
+  media_player_google: !input  media_player_google
+  media_player_alexa: !input  media_player_alexa
+#################################################
+mode: queued
+max: 20
+max_exceeded: silent
+trigger:
+  - id: 'power_warm_up'
+    platform: numeric_state
+    entity_id: !input power_plug
+    above: !input power_warm_up
+    for:
+      minutes: !input delay_middle
+  - id: 'power_end'
+    platform: numeric_state
+    entity_id: !input power_plug
+    below: !input power_end
+    for:
+      minutes: !input delay_finale
+  - id: 'power_cool_down'
+    platform: numeric_state
+    entity_id: !input power_plug
+    below: !input power_cool_down
+    for:
+      minutes: !input delay_middle
+  - id: 'power_start'
+    platform: numeric_state
+    entity_id: !input power_plug
+    above: !input power_start
+    for:
+      seconds: !input delay_start
+  - id: 'status_notification'
+    platform: state
+    entity_id: !input status_sensor
+#### CONDITION ####
+condition:
+  - condition: template
+    value_template:
+      "{{ true if automations_off == none else is_state ( automations_off, 'off' ) }}"
+#### ACTION #####
+action:
+  # - service: persistent_notification.create
+  #   data:
+  #     message: "{{notification_services}}"
+  #####################################
+  - choose:
+    # - alias: check first transiction FROM STATE1 to STATE2 or STATE3
+    #   conditions: "{{ trigger.from_state.state==stato1 and (trigger.to_state.state==stato2 or trigger.to_state.state==stato3) }}"
+    #   sequence:
+    #     - service: input_boolean.turn_off
+    #       target:
+    #         entity_id: !input helper_runtime
+    #     - service: input_boolean.turn_on
+    #       target:
+    #         entity_id: !input helper_runtime
+    #     - service: counter.increment
+    #       target:
+    #         entity_id: !input counter_sensor
+    #     - service: input_number.set_value
+    #       target:
+    #         entity_id: !input helper_total_energy
+    #       data:
+    #         value: "{{ states(energy_sensor) }}"
+    #     - &debug-mode
+    #       if:
+    #         - alias: "se DEBUG "
+    #           condition: template
+    #           value_template: "{{ debug_on }}"
+    #       then:
+    #         - service: system_log.write
+    #           data:
+    #             message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
+    #             level: info
+    #####################################
+    - alias: Idle (Stato1) --> Lavaggio/Riscaldamento (Stato2)
+      conditions: "{{ trigger.id == 'power_start'}}"
+      sequence:
+        - choose:
+          - conditions: "{{ states(status) == stato1 }}"
+            sequence:
+              - service: input_select.select_option
+                target:
+                  entity_id: "{{ status }}"
+                data:
+                  option: "{{ stato2 }}"
+              - service: input_boolean.turn_off
+                target:
+                  entity_id: !input helper_runtime
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: !input helper_runtime
+              - service: counter.increment
+                target:
+                  entity_id: !input counter_sensor
+              - service: input_number.set_value
+                target:
+                  entity_id: !input helper_total_energy
+                data:
+                  value: "{{ states(energy_sensor) }}"
+              - &debug-mode
+                if:
+                  - alias: "se DEBUG "
+                    condition: template
+                    value_template: "{{ debug_on }}"
+                then:
+                  - service: system_log.write
+                    data:
+                      message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
+                      level: info
+    - alias: Risciacquo(Stato3) --> Svuotare/Raffreddamento(Stato4)
+      conditions: "{{ trigger.id == 'power_end' }}"
+      sequence:
+        - choose:
+          - conditions: "{{ states(status) == stato3 }}"
+            sequence:
+              - service: input_select.select_option
+                target:
+                  entity_id: "{{ status }}"
+                data:
+                  option: "{{ stato4 }}"
+              - delay: "00:01:00"
+              - service: input_select.select_option
+                target:
+                  entity_id: "{{ status }}"
+                data:
+                  option: "{{ stato1 }}"
+              - *debug-mode
+    - alias: Lavaggio(Stato2) --> Risciacquo/Mantenimento(Stato3)
+      conditions: "{{ trigger.id == 'power_cool_down' }}"
+      sequence:
+        - choose:
+          - conditions: "{{ states(status) == stato2 }}"
+            sequence:
+              - service: input_select.select_option
+                target:
+                  entity_id: "{{ status }}"
+                data:
+                  option: "{{ stato3 }}"
+              - *debug-mode
+    - alias: Risciacquo/Mantenimento(Stato3) --> Lavaggio/Riscaldamento (Stato2)
+      conditions: "{{ trigger.id == 'power_warm_up' }}"
+      sequence:
+        - choose:
+          - conditions: "{{ states(status) ==  stato3  }}"
+            sequence:
+              - service: input_select.select_option
+                target:
+                  entity_id: "{{ status }}"
+                data:
+                  option:  "{{ stato2 }}"
+              - *debug-mode
+    ###################################
+    - alias: Gestione Notifiche
+      conditions: "{{ trigger.id == 'status_notification' }}"
+      sequence:
+        - choose:
+          - alias: Status -> Stato2 (Lavaggio/Riscaldamento) o Stato3 (Risciacquo/Mantenimento)
+            conditions: "{{ trigger.to_state.state in [stato2,stato3] }}"
+            sequence:
+              - variables:
+                  message: "{{appliance|capitalize}} è in fase di {{ trigger.to_state.state|lower }}"
+              - &messaggio-stato
+                choose:
+                  - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_alexa) }}"
+                    sequence: 
+                      - service: script.my_notify
+                        data:
+                          title: "-- Attenzione --"
+                          message: "{{ message }}"
+                          notify: "{{ notify }}"
+                          google:
+                            media_player: "{{ media_player_google }}"
+                          alexa:
+                            media_player: "{{ media_player_alexa }}"
+                  - conditions: "{{ use_cn and (not not media_player_google) }}"
+                    sequence: 
+                      - service: script.my_notify
+                        data:
+                          title: "-- Attenzione --"
+                          message: "{{ message }}"
+                          notify: "{{ notify }}"
+                          google:
+                            media_player: "{{media_player_google}}"
+                  - conditions: "{{ use_cn and (not not media_player_alexa) }}"
+                    sequence: 
+                      - service: script.my_notify
+                        data:
+                          title: "-- Attenzione --"
+                          message: "{{ message }}"
+                          notify: "{{ notify }}"
+                          alexa:
+                            media_player: "{{media_player_alexa}}"
+                  - conditions: "{{ use_cn }}"
+                    sequence: 
+                      - service: script.my_notify
+                        data:
+                          title: "-- Attenzione --"
+                          message: "{{message}}"
+                          notify: "{{notify}}"
+                default:
+                  - if:
+                      condition: template
+                      value_template: "{{ not not mobile_device }}"
+                    then:
+                      - device_id: "{{ mobile_device }}"
+                        domain: mobile_app
+                        type: notify
+                        title: "-- Attenzione --"
+                        message: "{{ message }}"
+                        data:
+                          tag: "network_notification"
+                          group: "{{ id }}"
+                          # Android Specific
+                          ttl: "{{ iif(critical, 0, 3600000) }}"
+                          priority: "{{ iif(critical, 'high', 'normal') }}"
+                          # iOS Specific
+                          push:
+                            interruption-level: "{{ iif(critical, 'critical', 'active') }}"
+                  - if:
+                      condition: template
+                      value_template: "{{ not not notify_telegram }}"
+                    then:
+                      - service: "{{ notify_telegram }}"
+                        data:
+                          title: "-- Attenzione --"
+                          message: "{{ message }}"
+                  - if:
+                      condition: template
+                      value_template: "{{ not not media_player_google}}"
+                    then:
+                      - service: media_player.volume_set
+                        data:
+                          volume: "{{ volume_level }}"
+                        target:
+                          entity_id: "{{ media_player_google }}"
+                      - delay: "00:00:01"
+                      - service: tts.google_translate_say
+                        data:
+                          message: "{{ message }}"
+                          entity_id: "{{ media_player_google }}"
+                  - if:
+                      condition: template
+                      value_template: "{{ not not media_player_alexa }}"
+                    then:
+                      - service: media_player.volume_set
+                        data:
+                          volume: "{{ volume_level }}"
+                        target:
+                          entity_id: "{{ media_player_alexa }}"
+                      - service: notify.alexa_media
+                        data:
+                          message: "{{ message }}"
+                          target: "{{ media_player_alexa }}"
+                          data:
+                            type: announce 
+              - *debug-mode
+          - alias: Status --> stato1
+            conditions: "{{ trigger.to_state.state == stato1 }}"
+            sequence:
+              - variables:
+                  message: "{{ appliance|capitalize }} ritornato nello stato iniziale"
+              - *messaggio-stato
+              - *debug-mode
+          - alias: Status -> Stato4
+            conditions: "{{ trigger.to_state.state == stato4 }}"
+            sequence:
+              - variables:
+                  message: "{{ appliance|capitalize }} ha concluso il ciclo. Puoi mettere a posto."
+              - *messaggio-stato
+              - *debug-mode
