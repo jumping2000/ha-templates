@@ -1,22 +1,36 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: FSM Elettrodomestici
-  description: '`2023.07.01`
+  name: CN FSM Elettrodomestici 2023.07.03
+  description: |
+    
+    ## CN FSM Appliances
 
-    Blueprint with 4 states finite state machine - Notifications with Mobile, Telegram, Alexa, Google Home/Nest or the fantastic "Centro Notifiche"
+    Blueprint with 4 states machine - Notifications with Mobile, Telegram, Alexa, Google Home/Nest or the fantastic "Centro Notifiche"
 
-    Blueprint che realizza una machina a stati finiti per gestire lo stato degli elettrodomestici:
-    - notifica il cambio di stato dell''elettrodomestico
-    - conta i cicli di lavaggio/asciugatura/cottura etc
-    - monitora il valore totale dell''energia consumata dall''elettrodomestico
-    - monitora il valore totale del tempo di esercizio
+    Blueprint che realizza una macchina con 4 stati per gestire lo stato degli elettrodomestici.
+
+    ### Required entities/integrations/components:
+      - Power sensor
+      - Energy sensor
+      - Helper sensor (see https://github.com/jumping2000/ha-packages/tree/main/elettrodomestici_2023  )
+      - Notifications with Telegram **or** Mobile App Device **or** ALexa **or** Google **or** "Centro Notifiche"
+
+    ### Features:
+      - notifications about appliance status
+      - counts the washing/drying/cooking cycles etc
+      - monitors the total energy used
+      - monitors the total value of exercise time
+
+      - notifica il cambio di stato dell''elettrodomestico
+      - conta i cicli di lavaggio/asciugatura/cottura etc
+      - monitora il valore totale dell''energia consumata dall''elettrodomestico
+      - monitora il valore totale del tempo di esercizio
 
     Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 16/07/2023 - Updated 13/07/2023
+    Date Started 15/05/2023 - Updated 15/07/2023
 
-    '
   domain: automation
   author: https://github.com/jumping2000/
-  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_fsm/cn_fsm_appliances.yaml
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/fsm/cn_fsm_appliances.yaml
 
   input:
     ###################################
@@ -87,22 +101,22 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           min: 0
           max: 30
           unit_of_measurement: Watt
-    power_end:
-      name: (REQUIRED) Finishing power threshold
+    delay_start:
+      name: (REQUIRED) First delay
       description: |
-        Power threshold below which we assume the appliance has finished
-        Soglia di potenza che indica la fine del ciclo di lavaggio dell'elettrodomestico
-      default: 2
+        Time spent in the starting state
+        Tempo di permanenza con potenza oltre la soglia iniziale che innesca il cambio di stato 
+      default: 30
       selector:
         number:
           min: 0
-          max: 30
-          unit_of_measurement: Watt
+          max: 300
+          unit_of_measurement: seconds
     power_warm_up:
       name: (REQUIRED) Power warm-up threshold
       description: |
         Power threshold above which we assume the appliance is in warm-up state
-        Soglia di potenza che indica la fase di riscaldamento dell'acqua dell'elettrodomestico
+        Soglia di potenza che indica la fase ad alto consumo dell'elettrodomestico
       default: 300
       selector:
         number:
@@ -113,40 +127,40 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (REQUIRED) Power cool-down threshold
       description: |
         Power threshold above which we assume the appliance is in cool-down state
-        Inserisci la potenza che indica la fase di fine riscaldamento/lavaggio
+        Soglia di potenza che indica la fase di fine della fase ad alto consumo
       default: 100
       selector:
         number:
           min: 5
           max: 200
           unit_of_measurement: Watt
-    delay_start:
-      name: (REQUIRED) First delay
-      description: |
-        Time spent in the starting state
-        Tempo di attesa nello stato iniziale
-      default: 30
-      selector:
-        number:
-          min: 0
-          max: 300
-          unit_of_measurement: seconds
     delay_middle:
       name: (REQUIRED) Delay between states
       description: |
         Time spent in the intermediate states
-        Tempo di attesa negli stati intermedi
+        Tempo di permanenza negli stati intermedi 
       default: 1
       selector:
         number:
           min: 0
           max: 10
           unit_of_measurement: minutes
+    power_end:
+      name: (REQUIRED) Finishing power threshold
+      description: |
+        Power threshold below which we assume the appliance has finished
+        Soglia di potenza che indica la fine del ciclo di lavaggio/asciugatura/cottura dell'elettrodomestico
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: Watt
     delay_finale:
       name: (REQUIRED) Last delay
       description: |
         Last delay before after which we are again in the initial state
-        Tempo di attesa prima del ritorno allo stato iniziale
+        Tempo di permanenza con potenza sotto soglia che indica la fase di fine del ciclo prima del ritorno allo stato iniziale
       default: 5
       selector:
         number:
@@ -243,11 +257,11 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         state:
           entity_id: input_select.notifier_text_notify
     ###################################
-    automations_off:
-      name: (Optional) Automations Off 
+    automation_status:
+      name: (Optional) Turn ON Automation 
       description: |
-        [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
-        Input boolean che abiita/disabilita l'automazione
+        [OPTIONAL] Global Automation, requires a 'input_boolean' { Toggle } Switch."
+        Abilita/disabilita l'automazione in base allo stato di un input boolean.
       default:
       selector:
         entity:
@@ -256,7 +270,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     debug_on:
       name: (Optional) Debug Mode On
       description: |
-        [OPTIONAL] System Logging 
+        [OPTIONAL] System Logging (INFO Level)
         Raccolta log del blueprint nel file di log di Home Assistant
       default:
       selector:
@@ -280,7 +294,7 @@ variables:
   stato3: "{{state_attr(status,'options')[2]}}"
   stato4: "{{state_attr(status,'options')[3]}}"
   #####################################
-  automations_off: !input automations_off
+  automation_status: !input automation_status
   debug_on: !input debug_on
   appliance: !input appliance
   #####################################
@@ -331,42 +345,9 @@ trigger:
 condition:
   - condition: template
     value_template:
-      "{{ true if automations_off == none else is_state ( automations_off, 'off' ) }}"
+      "{{ true if automation_status == none else is_state(automation_status, 'on') }}"
 #### ACTION #####
 action:
-  # - service: persistent_notification.create
-  #   data:
-  #     message: "{{notification_services}}"
-  #####################################
-  - choose:
-    # - alias: check first transiction FROM STATE1 to STATE2 or STATE3
-    #   conditions: "{{ trigger.from_state.state==stato1 and (trigger.to_state.state==stato2 or trigger.to_state.state==stato3) }}"
-    #   sequence:
-    #     - service: input_boolean.turn_off
-    #       target:
-    #         entity_id: !input helper_runtime
-    #     - service: input_boolean.turn_on
-    #       target:
-    #         entity_id: !input helper_runtime
-    #     - service: counter.increment
-    #       target:
-    #         entity_id: !input counter_sensor
-    #     - service: input_number.set_value
-    #       target:
-    #         entity_id: !input helper_total_energy
-    #       data:
-    #         value: "{{ states(energy_sensor) }}"
-    #     - &debug-mode
-    #       if:
-    #         - alias: "se DEBUG "
-    #           condition: template
-    #           value_template: "{{ debug_on }}"
-    #       then:
-    #         - service: system_log.write
-    #           data:
-    #             message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
-    #             level: info
-    #####################################
     - alias: Idle (Stato1) --> Lavaggio/Riscaldamento (Stato2)
       conditions: "{{ trigger.id == 'power_start'}}"
       sequence:
@@ -408,17 +389,19 @@ action:
         - choose:
           - conditions: "{{ states(status) == stato3 }}"
             sequence:
-              - service: input_select.select_option
-                target:
-                  entity_id: "{{ status }}"
-                data:
-                  option: "{{ stato4 }}"
-              - delay: "00:01:00"
-              - service: input_select.select_option
-                target:
-                  entity_id: "{{ status }}"
-                data:
-                  option: "{{ stato1 }}"
+              - parallel:
+                - service: input_select.select_option
+                  target:
+                    entity_id: "{{ status }}"
+                  data:
+                    option: "{{ stato4 }}"
+                - sequence:
+                  - delay: "00:02:00"
+                  - service: input_select.select_option
+                    target:
+                      entity_id: "{{ status }}"
+                    data:
+                      option: "{{ stato1 }}"
               - *debug-mode
     - alias: Lavaggio(Stato2) --> Risciacquo/Mantenimento(Stato3)
       conditions: "{{ trigger.id == 'power_cool_down' }}"
@@ -456,7 +439,7 @@ action:
                   message: "{{appliance|capitalize}} è in fase di {{ trigger.to_state.state|lower }}"
               - &messaggio-stato
                 choose:
-                  - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_alexa) }}"
+                  - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_google) }}"
                     sequence: 
                       - service: script.my_notify
                         data:
