@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.07.03
+  name: CN FSM Elettrodomestici 2023.08.01
   description: |
     
     ## CN FSM Appliances
@@ -12,7 +12,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       - Power sensor
       - Energy sensor
       - Helper sensor (see https://github.com/jumping2000/ha-packages/tree/main/elettrodomestici_2023  )
-      - Notifications with Telegram **or** Mobile App Device **or** ALexa **or** Google **or** "Centro Notifiche"
+      - Telegram **or** Mobile App Device **or** ALexa **or** Google **or** "Centro Notifiche"
 
     ### Features:
       - notifications about appliance status
@@ -348,6 +348,39 @@ condition:
       "{{ true if automation_status == none else is_state(automation_status, 'on') }}"
 #### ACTION #####
 action:
+  # - service: persistent_notification.create
+  #   data:
+  #     message: "{{notification_services}}"
+  #####################################
+  - choose:
+    # - alias: check first transiction FROM STATE1 to STATE2 or STATE3
+    #   conditions: "{{ trigger.from_state.state==stato1 and (trigger.to_state.state==stato2 or trigger.to_state.state==stato3) }}"
+    #   sequence:
+    #     - service: input_boolean.turn_off
+    #       target:
+    #         entity_id: !input helper_runtime
+    #     - service: input_boolean.turn_on
+    #       target:
+    #         entity_id: !input helper_runtime
+    #     - service: counter.increment
+    #       target:
+    #         entity_id: !input counter_sensor
+    #     - service: input_number.set_value
+    #       target:
+    #         entity_id: !input helper_total_energy
+    #       data:
+    #         value: "{{ states(energy_sensor) }}"
+    #     - &debug-mode
+    #       if:
+    #         - alias: "se DEBUG "
+    #           condition: template
+    #           value_template: "{{ debug_on }}"
+    #       then:
+    #         - service: system_log.write
+    #           data:
+    #             message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
+    #             level: info
+    #####################################
     - alias: Idle (Stato1) --> Lavaggio/Riscaldamento (Stato2)
       conditions: "{{ trigger.id == 'power_start'}}"
       sequence:
@@ -480,7 +513,7 @@ action:
                       condition: template
                       value_template: "{{ not not mobile_device }}"
                     then:
-                      - device_id: "{{ mobile_device }}"
+                      - device_id: !input  mobile_device
                         domain: mobile_app
                         type: notify
                         title: "-- Attenzione --"
@@ -508,27 +541,27 @@ action:
                     then:
                       - service: media_player.volume_set
                         data:
-                          volume: "{{ volume_level }}"
+                          volume_level: "{{ volume_level }}"
                         target:
-                          entity_id: "{{ media_player_google }}"
+                          entity_id: !input  media_player_google
                       - delay: "00:00:01"
                       - service: tts.google_translate_say
                         data:
                           message: "{{ message }}"
-                          entity_id: "{{ media_player_google }}"
+                          entity_id: !input  media_player_google
                   - if:
                       condition: template
                       value_template: "{{ not not media_player_alexa }}"
                     then:
                       - service: media_player.volume_set
                         data:
-                          volume: "{{ volume_level }}"
+                          volume_level: "{{ volume_level }}"
                         target:
-                          entity_id: "{{ media_player_alexa }}"
+                          entity_id: !input  media_player_alexa
                       - service: notify.alexa_media
                         data:
                           message: "{{ message }}"
-                          target: "{{ media_player_alexa }}"
+                          target: !input  media_player_alexa
                           data:
                             type: announce 
               - *debug-mode
