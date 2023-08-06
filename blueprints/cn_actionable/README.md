@@ -7,7 +7,7 @@
 | [CN Package](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon) | > 4.0.0 |
 
 
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjumping2000%2Fha-templates%2Fblob%2Fmain%2Fblueprints%2Fcn_actionable%2Fcb_actionable.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fjumping2000%2Fha-templates%2Fblob%2Fmain%2Fblueprints%2Fcn_actionable%2Fcn_actionable.yaml)
 
 ## Mobile and Telegram Actionable Notifications
 This blueprint will send a defined number of notifications to your device or Telegram app or Alexa at a pre-defined interval until it has been acknowledged via the actionable notification.
