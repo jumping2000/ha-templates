@@ -17,7 +17,7 @@ Ricordati di:
 E' possibile utilizzare anche l'interfaccia utente per creare il sensore inserendo:
 * URL di MAriaDB o altro se utilizzate un DB diverso dallo standard
 * il codice SQL 
-* e nella colonna il valore "value"
+* e nel campo  ***colonna*** il valore "value"
 
 **[ENGLISH]** ***Max sensor with SQL code, it gives the maximum (minimum) value of an HA entity during the day (from 00.00/12.00AM to 24.00/12.00PM). You can use YAML language or add with UI.***
 
