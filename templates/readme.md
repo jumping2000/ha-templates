@@ -1,5 +1,5 @@
 | Templates & Co | Descrizione |
-| :---: | --- |
+| :---: | --- | 
 | [Max Sensor Day](#maria-db-max-sensor) | Sensore SQL che indica il massimo valore raggiunto da una entità |
 | [Min Sensor Day](#maria-db-min-sensor) | Sensore SQL che indica il minimo valore raggiunto da una entità |
 
