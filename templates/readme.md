@@ -1,7 +1,7 @@
 | Templates & Co | Descrizione |
 | :---: | --- | 
-| [Max Sensor Day](#maria-db-max-sensor) | Sensore SQL che indica il massimo valore raggiunto da una entità |
-| [Min Sensor Day](#maria-db-min-sensor) | Sensore SQL che indica il minimo valore raggiunto da una entità |
+| [Max Sensor Day](#maria-db-max-sensor) | Sensore SQL che indica il massimo valore raggiunto da una entità nella giornata |
+| [Min Sensor Day](#maria-db-min-sensor) | Sensore SQL che indica il minimo valore raggiunto da una entità nella giornata |
 
 <br>
 
@@ -12,7 +12,7 @@
 Il sensore indica il massimo (minimo) valore raggiunto da una entità di HA durante la giornata (dalle 00:00 alla 24.00). 
 Ricordati di:
 * personalizzare l'entità con i relativi *state_class*, *device_class* e *unit_of_measurement*
-* l'entità di cui vuoi calcolare il massimo giornaliero deve essere già presente nel [recorder](https://www.home-assistant.io/integrations/recorder/)  (___sensor.electric_production_power___ è solo un sensore di esempio)
+* l'entità di cui vuoi calcolare il massimo (minimo) giornaliero deve essere già presente nel [recorder](https://www.home-assistant.io/integrations/recorder/)  (___sensor.electric_production_power___ è solo un sensore di esempio)
 
 E' possibile utilizzare anche l'interfaccia utente per creare il sensore inserendo:
 * URL di MAriaDB o altro se utilizzate un DB diverso dallo standard
