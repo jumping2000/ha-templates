@@ -1,29 +1,32 @@
 | Templates & Co | Descrizione |
 | :---: | --- |
-| [Max Sensor Day](#max-sensor-day) | Sensore SQL che indica il massimo valore raggiunto da una entità |
-| [Min Sensor Day](#min-sensor-day) | Sensore SQL che indica il minimo valore raggiunto da una entità |
+| [Max Sensor Day](#maria-db-max-sensor) | Sensore SQL che indica il massimo valore raggiunto da una entità |
+| [Min Sensor Day](#maria-db-min-sensor) | Sensore SQL che indica il minimo valore raggiunto da una entità |
 
 <br>
 
 **Ti piacciono questi templates? Lascia una stella ⭐ su Github e supportami per realizzarne altri!** <a href="https://www.buymeacoffee.com/jumping"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" height="20"></a>
 <br>
 
-## Max Sensor Day
-Il sensore indica il massimo valore raggiunto da una entità di HA durante la giornata (dalle 00:00 alla 24.00). Ricordati di personalizzare l'entità di cui
-di cui vuoi calcolare il massimo giornaliero (___sensor.electric_production_power___ è solo un esempio).<br>
+# Max/Min Sensor Day
+Il sensore indica il massimo (minimo) valore raggiunto da una entità di HA durante la giornata (dalle 00:00 alla 24.00). 
+Ricordati di:
+* personalizzare l'entità con i relativi *state_class*, *device_class* e *unit_of_measurement*
+* l'entità di cui vuoi calcolare il massimo giornaliero deve essere già presente nel [recorder](https://www.home-assistant.io/integrations/recorder/)  (___sensor.electric_production_power___ è solo un sensore di esempio)
+
 E' possibile utilizzare anche l'interfaccia utente per creare il sensore inserendo:
 * URL di MAriaDB o altro se utilizzate un DB diverso dallo standard
 * il codice SQL 
 * e nella colonna il valore "value"
 
-**[ENGLISH]** Max sensor with SQL code, it gives the max value of an HA entity during the day (from 00.00/12.00AM to 24.00/12.00PM). You can use YAML language or add with UI.
+**[ENGLISH]** ***Max sensor with SQL code, it gives the maximum (minimum) value of an HA entity during the day (from 00.00/12.00AM to 24.00/12.00PM). You can use YAML language or add with UI.***
 
-Clicca qui sotto per aggiungere il sensore SQL tramite UI / Click below to add the sensor with UI
+Clicca qui sotto per aggiungere il sensore SQL tramite UI / ***Click below to add the sensor with UI***
 
 [![Open your Home Assistant instance and add integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=sql)
 
 
-### Maria DB
+### Maria DB max sensor
 
 ```yaml
 
@@ -42,7 +45,7 @@ Clicca qui sotto per aggiungere il sensore SQL tramite UI / Click below to add t
 
 ```
 
-### SQL Lite (DB standard di Home Assistant)
+### SQL Lite (DB standard di Home Assistant) max sensor
 ```yaml
 
   sql:
@@ -62,22 +65,7 @@ Clicca qui sotto per aggiungere il sensore SQL tramite UI / Click below to add t
 
 <br>
 
-## Min Sensor Day
-Il sensore indica il minimo valore raggiunto da una entità di HA durante la giornata (dalle 00:00 alla 24.00). Ricordati di personalizzare l'entità di cui
-di cui vuoi calcolare il massimo giornaliero (___sensor.electric_production_power___ è solo un esempio).<br>
-E' possibile utilizzare anche l'interfaccia utente per creare il sensore inserendo:
-* URL di MAriaDB o altro se utilizzate un DB diverso dallo standard
-* il codice SQL 
-* e nella colonna il valore "value"
-
-**[ENGLISH]** Minimum sensor with SQL code, it gives the minimum value of an HA entity during the day (from 00.00/12.00AM to 24.00/12.00PM). You can use YAML language or add with UI.
-
-Clicca qui sotto per aggiungere il sensore SQL tramite UI / Click below to add the sensor with UI
-
-[![Open your Home Assistant instance and add integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=sql)
-
-
-### Maria DB
+### Maria DB min sensor
 
 ```yaml
 
@@ -96,7 +84,7 @@ Clicca qui sotto per aggiungere il sensore SQL tramite UI / Click below to add t
 
 ```
 
-### SQL Lite
+### SQL Lite min sensor
 ```yaml
 
   sql:
