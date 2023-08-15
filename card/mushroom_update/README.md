@@ -117,7 +117,7 @@ Using custom card [auto-entities](https://github.com/thomasloven/lovelace-auto-e
 
 <!-- ✨ _special_ ✨ -->
 [website]: https://hassiohelp.eu/
-[Websitebadge]: https://img.shields.io/website?down_message=Offline&label=HssioHelp&logoColor=blue&up_message=Online&url=https%3A%2F%2Fhassiohelp.eu
+[Websitebadge]: https://img.shields.io/website?down_message=Offline&label=HassioHelp&logoColor=blue&up_message=Online&url=https%3A%2F%2Fhassiohelp.eu
 
 [telegram]: https://t.me/HassioHelp
 [telegrambadge]: https://img.shields.io/badge/Chat-Telegram-blue?logo=Telegram
