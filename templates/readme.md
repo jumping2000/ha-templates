@@ -53,7 +53,7 @@ Clicca qui sotto per aggiungere il sensore SQL tramite UI / ***Click below to ad
       query: >
         SELECT MAX(max) as value FROM `statistics_short_term` 
         WHERE metadata_id = (SELECT id FROM `statistics_meta` WHERE statistic_id = "sensor.electric_production_power") 
-        AND DATE(start_ts,"unixepoch")= DATE("now");
+        AND DATE(start_ts,"unixepoch")= DATE("now")
         LIMIT
           1;
       column: "value"
@@ -92,7 +92,7 @@ Clicca qui sotto per aggiungere il sensore SQL tramite UI / ***Click below to ad
       query: >
         SELECT MIN(min) as value FROM `statistics_short_term` 
         WHERE metadata_id = (SELECT id FROM `statistics_meta` WHERE statistic_id = "sensor.electric_production_power") 
-        AND DATE(start_ts,"unixepoch")= DATE("now");
+        AND DATE(start_ts,"unixepoch")= DATE("now")
         LIMIT
           1;
       column: "value"
