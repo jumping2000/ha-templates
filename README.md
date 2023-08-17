@@ -3,6 +3,7 @@
 | Home Assistant  |
 | :---: |
 | [Jinja](/custom_templates) |
+| [Templates](/templates) |
 | [Blueprints](/blueprints) | 
 | [Appdaemon](/appdaemon) | 
 | [Lovelace Card](/card) | 
