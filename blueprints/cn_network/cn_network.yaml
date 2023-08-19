@@ -1,19 +1,38 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: Network Notification
-  description: > 
-    Blueprint with info about WAN link - Notifications with Mobile, Telegram, Alexa, Google Home/Nest or Centro Notifiche
+  name: CN Network Notification 2023.8.0
+  description: |
+    
+    ## CN Network Notification
 
-    Blueprint con notifica delle informazioni relative alla connessione dati WAN: 
-    - notifica se indirizzo IP WAN cambia
-    - monitora il throughput del collegamento in upload e download 
-    - effettua il reload dell'integrazione speedtest se diventa "unavailable"
+    Blueprint with info about WAN link - Notifications with Mobile, Telegram, Alexa, Google Home/Nest or the fantastic "Centro Notifiche"
 
-    Authors [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 01/11/2019 - Updated 20/05/2023
+    Blueprint con notifica delle informazioni relative alla connessione dati WAN
+
+    ### Required entities/integrations/components:
+      - Fritzbox integration
+      - Speedtest integration
+      - Ping binary sensor or device tracker 
+      - Telegram **or** Mobile App Device **or** ALexa **or** Google **or** "Centro Notifiche"
+
+    ### Features:
+      - notifications about WAN IP changes
+      - monitors the link throughput
+      - monitors the Speedtest ping
+      - checks the LAN connectivity of some devices
+      - automatic reload of Speedtest integration
+
+      - notifica se indirizzo IP WAN cambia
+      - monitora il throughput del collegamento in upload e download
+      - check della connettività con le integrazioni Ping e FRITZ!Box
+      - monitora il valore del sensore Ping esposto da Speedtest
+      - effettua il reload dell''integrazione Speedtest se diventa "unavailable"
+
+    Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
+    Date Started 23/06/2023 - Updated 19/08/2023
 
   domain: automation
   author: https://github.com/jumping2000/
-  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/network_notification/network_notification.yaml
+  source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_network/cn_network.yaml
   input:
     ###################################
     throughput_upload:
@@ -60,11 +79,26 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       selector:
         entity:
           domain: sensor
+    connection_verify:
+      name: (REQUIRED) Connection verify
+      description: |
+        Check connectivity through PING o FRITZ!Box  integration
+        Check della stato di connettività attraverso integrazioni PING o FRITZ!Box
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: ping
+              domain: binary_sensor
+            - integration: fritz
+              domain: 
+                - binary_sensor
+                - device_tracker
     speedtest_integration:
       name: Speedtest ID
       description: |
         ID of speedtest integration
-        Identificativo dell'integrazion espeedtest
+        Identificativo dell'integrazione speedtest (si può vedere da qui: )
       default:
       selector:
         text:
@@ -74,39 +108,280 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       description: |
         Time threshold after which we restart the integration
         Soglia di tempo oltre la quale riavviare l'integrazione
-      default: 3
+      default: 5
       selector:
         number:
-          max: 20
+          max: 30
           min: 0
-          unit_of_measurement: MM
+          unit_of_measurement: min
     speedtest_ping:
       name: Speedtest Ping sensor
       description: |
         Speedtest Ping entity
         Entità Speedtest Ping
-      default:
       selector:
         entity:
+          multiple: false
           domain: sensor
-    speedtest_upload:
-      name: Speedtest upload sensor
+    threshold_ping:
+      name: Ping Threshold
       description: |
-        Speedtest upload entity
-        Entità Speedtest upload
-      default:
+        Threshold above it sends a notification
+        Soglia oltre la quale inviare una notifica 
+      default: 20
       selector:
-        entity:
-          domain: sensor
-    speedtest_download:
-      name: Speedtest download sensor
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: ms
+#################################################
+    connection_status:
+      name: (REQUIRED) Connection status
       description: |
-        Speedtest download entity
-        Entità Speedtest download
+        FRITZ!Box connection status 
+        Stato della connessione rilevato da FRITZ!Box
       default:
       selector:
         entity:
-          domain: sensor
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - binary_sensor
+    link_status:
+      name: (REQUIRED) Link status
+      description: |
+        FRITZ!Box link status 
+        Stato della link fisico rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - binary_sensor
+    connection_uptime:
+      name: Connection uptime
+      description: |
+        FRITZ!Box connection uptime
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    device_uptime:
+      name: Device uptime
+      description: |
+        FRITZ!Box device uptime
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    switch_wifi_24:
+      name: (REQUIRED) Switch Wifi 2.4 Ghz
+      description: |
+        FRITZ!Box Switch Wifi network 2.4 Ghz
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - switch
+    switch_wifi_5:
+      name: (REQUIRED) Switch Wifi 5 Ghz
+      description: |
+        FRITZ!Box Switch Wifi network 5 Ghz
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - switch
+    switch_wifi_guest:
+      name: (REQUIRED) Switch Wifi Guest
+      description: |
+        FRITZ!Box Switch Wifi network Guest
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - switch
+    upload_throughput:
+      name: Upload Power Attenuation
+      description: |
+        FRITZ!Box Upload throughput 
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    download_throughput:
+      name: Download throughput 
+      description: |
+        FRITZ!Box Download throughput 
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    upload_noise_margin:
+      name: Upload noise margin
+      description: |
+        FRITZ!Box Upload noise margin
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    download_noise_margin:
+      name: Download noise margin
+      description: |
+        FRITZ!Box Download noise margin
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    upload_power_attenuation:
+      name: Upload Power Attenuation
+      description: |
+        FRITZ!Box Upload Power Attenuation 
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    download_power_attenuation:
+      name: Download Power Attenuation 
+      description: |
+        FRITZ!Box Download Power Attenuation 
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    upload_gb_sent:
+      name: GB Sent
+      description: |
+        FRITZ!Box GB Sent
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    download_gb_received:
+      name: GB Reveived 
+      description: |
+        FRITZ!Box GB received
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    button_cleanup:
+      name: Cleanup entities
+      description: |
+        FRITZ!Box Cleanup entities
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - button
+    button_firmware_update:
+      name: Firmware Update
+      description: |
+        FRITZ!Box Firmware Update
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - button
+    button_reboot:
+      name: Reboot
+      description: |
+        FRITZ!Box Reboot
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - button
+    button_reconnect:
+      name: Reconnect
+      description: |
+        FRITZ!Box Reconnect
+        Stato della connessione rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - button
 #################################################
     mobile_device:
       name: Mobile Device
@@ -158,7 +433,6 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
             - integration: alexa_media
               domain: media_player
       default: []
-
     volume_level:
       name: (Optional) Volume Level
       description: |
@@ -189,11 +463,11 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         state:
           entity_id: input_select.notifier_text_notify
     ###################################
-    automations_off:
-      name: (Optional) Automations Off 
+    automation_status:
+      name: (Optional) Turn ON Automation 
       description: |
-        [OPTIONAL] Global Automations off, requires a 'input_boolean' { Toggle } Switch."
-        Input boolean che abiita/disabilita l'automazione
+        [OPTIONAL] Global Automation, requires a 'input_boolean' { Toggle } Switch."
+        Abilita/disabilita l'automazione in base allo stato di un input boolean.
       default:
       selector:
         entity:
@@ -202,7 +476,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     debug_on:
       name: (Optional) Debug Mode On
       description: |
-        [OPTIONAL] System Logging 
+        [OPTIONAL] System Logging (INFO Level)
         Raccolta log del blueprint nel file di log di Home Assistant
       default:
       selector:
@@ -213,20 +487,18 @@ variables:
   external_ip: !input external_ip
   speedtest_integration: !input speedtest_integration
   speedtest_restart: !input speedtest_restart
-  speedtest_upload: !input speedtest_upload
-  speedtest_download: !input speedtest_download
   #####################################
-  automations_off: !input automations_off
+  automation_status: !input automation_status
   debug_on: !input debug_on
   #####################################
   _volume_level: !input volume_level
-  volume_level: "{{ (_volume_level /100)|float if _volume_level != None else 0.2 }}"
+  volume_level: "{{ iif(not not _volume_level, (_volume_level /100)|float, 0.3) }}"
   notify: !input notification_services
   use_cn: !input use_centro_notifiche
   #####################################
-  critical: !input critical 
+  critical: !input critical
   _mobile_device: !input mobile_device
-  mobile_device: "{{ _mobile_device if _mobile_device != None else 'a0' }}"
+  mobile_device: "{{ iif(not not _mobile_device, _mobile_device, 'a0') }}"
   notify_telegram: !input notify_telegram
   media_player_google: !input  media_player_google
   media_player_alexa: !input  media_player_alexa
@@ -236,28 +508,29 @@ max: 20
 max_exceeded: silent
 trigger_variables:
   _speedtest_ping: !input speedtest_ping
-  speedtest_ping: "{{ _speedtest_ping if states[_speedtest_ping] != None else 0 }}"
+  speedtest_ping: "{{ iif(not not _speedtest_ping, _speedtest_ping, 1000) }}"
   throughput_upload: !input throughput_upload
   throughput_download: !input throughput_download
   threshold_throughput_upload: !input threshold_throughput_upload
   threshold_throughput_download: !input threshold_throughput_download
+  threshold_ping: !input threshold_ping
 trigger:
   - platform: template
     value_template: "{{ states(throughput_download)|float < threshold_throughput_download|float }}"
     for: "00:00:10"
-    id: download_speed_down
+    id: 'download_speed_down'
   - platform: template
     value_template: "{{ states(throughput_upload)|float < threshold_throughput_upload|float }}"
     for: "00:00:10"
-    id: upload_speed_down
+    id: 'upload_speed_down'
   - platform: template
     value_template: "{{ states(throughput_download)|float > threshold_throughput_download|float }}"
     for: "00:00:10"
-    id: download_speed_up
+    id: 'download_speed_up'
   - platform: template
     value_template: "{{ states(throughput_upload)|float > threshold_throughput_upload|float }}"
     for: "00:00:10"
-    id: upload_speed_up
+    id: 'upload_speed_up'
   - platform: state
     entity_id: !input external_ip
     id: 'external_ip'
@@ -266,11 +539,36 @@ trigger:
     for: 
       minutes: "{{ speedtest_restart }}"
     id: 'restart_speedtest'
+  - platform: template
+    value_template: "{{ states(speedtest_ping)|float > threshold_ping|float }}"
+    for: "00:00:10"
+    id: 'speedtest_ping'
+  - platform: state
+    entity_id: !input connection_verify
+    from: 'off'
+    to: 'on'
+    id: 'conn_verify1'
+  - platform: state
+    entity_id: !input connection_verify
+    from: 'on'
+    to: 'off'
+    id: 'conn_verify2'
+  - platform: state
+    entity_id: !input connection_verify
+    from: 'not_home'
+    to: 'home'
+    id: 'conn_verify3'
+  - platform: state
+    entity_id: !input connection_verify
+    from: 'home'
+    to: 'not_home'
+    id: 'conn_verify4'
+    
 #### CONDITION ####
 condition:
   - condition: template
     value_template:
-      "{{ true if automations_off == none else is_state ( automations_off, 'off' ) }}"
+      "{{ true if automation_status == none else is_state(automation_status, 'on') }}"
 #### ACTION #####
 action:
   # - service: persistent_notification.create
@@ -278,31 +576,31 @@ action:
   #     message: "{{notification_services}}"
   #####################################
   - choose:
-    - alias: threshold below
+    - alias: Sotto la soglia
       conditions: "{{ trigger.id in ['download_speed_down', 'upload_speed_down'] }}"
       sequence:
         - variables:
             message: "Velocità di {{ 'download' if trigger.id == 'download_speed_down' else 'upload' }} della connessione Internet sotto soglia e pari a {{ states(throughput_download) if trigger.id == 'download_speed_down' else states(throughput_upload) }} Mbps"
         - &messaggio-stato
           choose:
-            - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_alexa) }}"
+            - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_google) }}"
               sequence: 
                 - service: script.my_notify
                   data:
                     title: "-- Attenzione --"
-                    message: "{{message}}"
-                    notify: "{{notify}}"
+                    message: "{{ message }}"
+                    notify: "{{ notify }}"
                     google:
-                      media_player: "{{media_player_google}}"
+                      media_player: "{{ media_player_google }}"
                     alexa:
-                      media_player: "{{media_player_alexa}}"
+                      media_player: "{{ media_player_alexa }}"
             - conditions: "{{ use_cn and (not not media_player_google) }}"
               sequence: 
                 - service: script.my_notify
                   data:
                     title: "-- Attenzione --"
-                    message: "{{message}}"
-                    notify: "{{notify}}"
+                    message: "{{ message }}"
+                    notify: "{{ notify }}"
                     google:
                       media_player: "{{media_player_google}}"
             - conditions: "{{ use_cn and (not not media_player_alexa) }}"
@@ -310,8 +608,8 @@ action:
                 - service: script.my_notify
                   data:
                     title: "-- Attenzione --"
-                    message: "{{message}}"
-                    notify: "{{notify}}"
+                    message: "{{ message }}"
+                    notify: "{{ notify }}"
                     alexa:
                       media_player: "{{media_player_alexa}}"
             - conditions: "{{ use_cn }}"
@@ -326,7 +624,7 @@ action:
                 condition: template
                 value_template: "{{ not not mobile_device }}"
               then:
-                - device_id: "{{ mobile_device }}"
+                - device_id: !input  mobile_device
                   domain: mobile_app
                   type: notify
                   title: "-- Attenzione --"
@@ -354,27 +652,27 @@ action:
               then:
                 - service: media_player.volume_set
                   data:
-                    volume: "{{ volume_level }}"
+                    volume_level: "{{ volume_level }}"
                   target:
-                    entity_id: "{{ media_player_google }}"
+                    entity_id: !input  media_player_google
                 - delay: "00:00:01"
                 - service: tts.google_translate_say
                   data:
                     message: "{{ message }}"
-                    entity_id: "{{ media_player_google }}"
+                    entity_id: !input  media_player_google
             - if:
                 condition: template
                 value_template: "{{ not not media_player_alexa }}"
               then:
                 - service: media_player.volume_set
                   data:
-                    volume: "{{ volume_level }}"
+                    volume_level: "{{ volume_level }}"
                   target:
-                    entity_id: "{{ media_player_alexa }}"
+                    entity_id: !input  media_player_alexa
                 - service: notify.alexa_media
                   data:
                     message: "{{ message }}"
-                    target: "{{ media_player_alexa }}"
+                    target: !input  media_player_alexa
                     data:
                       type: announce 
         - &debug-mode
@@ -387,18 +685,33 @@ action:
               data:
                 message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
                 level: info
-    - alias: threshold above
+    - alias: Oltre la soglia
       conditions: "{{ trigger.id in ['download_speed_up',' upload_speed_up']}}"
       sequence:
         - variables:
             message: "Velocità di {{ 'download' if trigger.id == 'download_speed_up' else 'upload' }} della connessione Internet ritornata oltre soglia e pari a {{ states(throughput_download) if trigger.id == 'download_speed_up' else states(throughput_upload) }} Mbps"
         - *messaggio-stato
         - *debug-mode
-    - alias: New external IP
-      conditions: "{{ trigger.id == 'external_ip' }}"
+    - alias: Nuovo IP WAN
+      conditions: "{{ trigger.id == 'external_ip' and (trigger.from_state.state != trigger.to_state.state) }}"
       sequence:
         - variables:
             message: "IP pubblico cambiato da {{ trigger.from_state.state }} a {{ trigger.to_state.state }}."
+        - *messaggio-stato
+        - *debug-mode
+    - alias: Ping threshold
+      conditions: "{{ trigger.id == 'speedtest_ping' }}"
+      sequence:
+        - variables:
+            message: "Ping oltre la soglia di {{ threshold_ping }} msec."
+        - *messaggio-stato
+        - *debug-mode
+    - alias: Ping sensor change
+      conditions: >
+        {{ trigger.id in ['conn_verify1','conn_verify2','conn_verify3','conn_verify4'] and (trigger.from_state.state != trigger.to_state.state) }}
+      sequence:
+        - variables:
+            message: "Il dispositivo {{ trigger.from_state.name }} è passato dallo stato {{ trigger.from_state.state }} allo stato {{ trigger.to_state.state }}."
         - *messaggio-stato
         - *debug-mode
     - alias: Restart speedtest integration
@@ -412,5 +725,8 @@ action:
           then:
             - choose: []
               default:
+                - service: homeassistant.reload_config_entry
+                  data:
+                    entry_id: "{{ speedtest_integration }}"
                 - *messaggio-stato
                 - *debug-mode
