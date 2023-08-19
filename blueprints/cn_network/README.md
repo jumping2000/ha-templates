@@ -24,6 +24,7 @@ Features:
 - sending notifications related to the reload of the Speedtest integration
 
 <br>
+
 Il blueprint invia notifiche relative ad eventi di rete attraverso le integrazioni di notifica di Home Assistant (Mobile, Telegram Google e Alexa) oppure attraverso il fantastico <b>Centro Notifiche</b> ([Blueprint](https://github.com/caiosweet/Package-Notification-HUB-AppDaemon) & [App](https://github.com/jumping2000/notifier)).
 Vediamo cosa è possibile fare:
 - invio notifiche relative a variazioni delle velocità di upload e download (attraverso integrazione Speedtest o simili)
