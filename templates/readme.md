@@ -15,7 +15,7 @@ Ricordati di:
 * l'entità di cui vuoi calcolare il massimo (minimo) giornaliero deve essere già presente nel [recorder](https://www.home-assistant.io/integrations/recorder/)  (___sensor.electric_production_power___ è solo un sensore di esempio)
 
 E' possibile utilizzare anche l'interfaccia utente per creare il sensore inserendo:
-* URL di MAriaDB o altro se utilizzate un DB diverso dallo standard
+* URL di MariaDB se utilizzate un DB diverso dallo standard (per sQL lite non occorre inserire nulla)
 * il codice SQL 
 * e nel campo  ***colonna*** il valore "value"
 
