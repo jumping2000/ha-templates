@@ -252,6 +252,32 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
             - integration: fritz
               domain: 
                 - sensor
+    upload_link_throughput:
+      name: Upload link throughput
+      description: |
+        FRITZ!Box Upload link throughput 
+        Aggancio portante in upload rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
+    download_link_throughput:
+      name: Download link throughput 
+      description: |
+        FRITZ!Box Download link throughput 
+        Aggancio portante in download rilevato da FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - sensor
     upload_noise_margin:
       name: Upload noise margin
       description: |
