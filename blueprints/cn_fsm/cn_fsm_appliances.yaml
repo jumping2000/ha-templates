@@ -214,7 +214,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           filter:
             - integration: cast
               domain: media_player
-      default: []
+      default:
     media_player_alexa:
       name: Media Player Alexa
       description: |
@@ -226,7 +226,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           filter:
             - integration: alexa_media
               domain: media_player
-      default: []
+      default:
     volume_level:
       name: (Optional) Volume Level
       description: |
@@ -252,7 +252,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       description: |
         Mobile, Telegram or other notification service configured with Centro Notifiche
         Serivzi di notifica Mobile App, Telegram o altro configurati nel Centro Notifiche
-      default: []
+      default:
       selector:
         state:
           entity_id: input_select.notifier_text_notify
@@ -305,7 +305,7 @@ variables:
   #####################################
   critical: !input critical
   _mobile_device: !input mobile_device
-  mobile_device: "{{ iif(not not _mobile_device, mobile_device, 'a0') }}"
+  mobile_device: "{{ iif(not not _mobile_device, _mobile_device, 'a0') }}"
   notify_telegram: !input notify_telegram
   media_player_google: !input  media_player_google
   media_player_alexa: !input  media_player_alexa
