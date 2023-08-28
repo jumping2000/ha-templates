@@ -162,7 +162,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - binary_sensor
     connection_uptime:
-      name: Connection uptime
+      name: (REQUIRED) Connection uptime
       description: |
         FRITZ!Box connection uptime
         Stato della connessione rilevato da FRITZ!Box
@@ -175,7 +175,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - sensor
     device_uptime:
-      name: Device uptime
+      name: (REQUIRED) Device uptime
       description: |
         FRITZ!Box device uptime
         Stato della connessione rilevato da FRITZ!Box
@@ -227,10 +227,10 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - switch
     upload_throughput:
-      name: Upload Power Attenuation
+      name: Upload throughput
       description: |
         FRITZ!Box Upload throughput 
-        Stato della connessione rilevato da FRITZ!Box
+        Upload throughput rilevato da FRITZ!Box
       default:
       selector:
         entity:
@@ -243,7 +243,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: Download throughput 
       description: |
         FRITZ!Box Download throughput 
-        Stato della connessione rilevato da FRITZ!Box
+        Download throughput rilevato da FRITZ!Box
       default:
       selector:
         entity:
@@ -331,7 +331,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - sensor
     upload_gb_sent:
-      name: GB Sent
+      name: (REQUIRED) GB Sent
       description: |
         FRITZ!Box GB Sent
         Stato della connessione rilevato da FRITZ!Box
@@ -344,7 +344,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - sensor
     download_gb_received:
-      name: GB Reveived 
+      name: (REQUIRED) GB Reveived 
       description: |
         FRITZ!Box GB received
         Stato della connessione rilevato da FRITZ!Box
@@ -357,7 +357,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - sensor
     button_cleanup:
-      name: Cleanup entities
+      name: (REQUIRED) Cleanup entities
       description: |
         FRITZ!Box Cleanup entities
         Stato della connessione rilevato da FRITZ!Box
@@ -370,7 +370,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - button
     button_firmware_update:
-      name: Firmware Update
+      name: (REQUIRED) Firmware Update
       description: |
         FRITZ!Box Firmware Update
         Stato della connessione rilevato da FRITZ!Box
@@ -383,7 +383,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - button
     button_reboot:
-      name: Reboot
+      name: (REQUIRED) Reboot
       description: |
         FRITZ!Box Reboot
         Stato della connessione rilevato da FRITZ!Box
@@ -396,7 +396,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - button
     button_reconnect:
-      name: Reconnect
+      name: (REQUIRED) Reconnect
       description: |
         FRITZ!Box Reconnect
         Stato della connessione rilevato da FRITZ!Box
