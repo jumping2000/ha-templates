@@ -229,7 +229,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     upload_throughput:
       name: Upload throughput
       description: |
-        FRITZ!Box Upload throughput 
+        FRITZ!Box Upload throughput
         Upload throughput rilevato da FRITZ!Box
       default:
       selector:
@@ -242,7 +242,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     download_throughput:
       name: Download throughput 
       description: |
-        FRITZ!Box Download throughput 
+        FRITZ!Box Download throughput
         Download throughput rilevato da FRITZ!Box
       default:
       selector:
@@ -279,10 +279,10 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: 
                 - sensor
     upload_noise_margin:
-      name: Upload noise margin
+      name: Upload noise margin 
       description: |
-        FRITZ!Box Upload noise margin
-        Stato della connessione rilevato da FRITZ!Box
+        FRITZ!Box Upload noise margin (only for ADSL/FTTC)
+        Margine di rumone in upload rilevato da FRITZ!Box
       default:
       selector:
         entity:
@@ -294,8 +294,8 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     download_noise_margin:
       name: Download noise margin
       description: |
-        FRITZ!Box Download noise margin
-        Stato della connessione rilevato da FRITZ!Box
+        FRITZ!Box Download noise margin (only for ADSL/FTTC)
+        Margine di rumone in download rilevato da FRITZ!Box
       default:
       selector:
         entity:
@@ -307,8 +307,8 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     upload_power_attenuation:
       name: Upload Power Attenuation
       description: |
-        FRITZ!Box Upload Power Attenuation 
-        Stato della connessione rilevato da FRITZ!Box
+        FRITZ!Box Upload Power Attenuation (only for ADSL/FTTC)
+        Attenuazione in upload rilevata da FRITZ!Box
       default:
       selector:
         entity:
@@ -320,8 +320,8 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     download_power_attenuation:
       name: Download Power Attenuation 
       description: |
-        FRITZ!Box Download Power Attenuation 
-        Stato della connessione rilevato da FRITZ!Box
+        FRITZ!Box Download Power Attenuation (only for ADSL/FTTC)
+        Attenuazione in download rilevata da FRITZ!Box
       default:
       selector:
         entity:
@@ -408,6 +408,19 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
             - integration: fritz
               domain: 
                 - button
+    update_firmware:
+      name: (REQUIRED) Info about firmware update
+      description: |
+        FRITZ!Box Update firmware info
+        Informazioni sulla disponibilità di update per FRITZ!Box
+      default:
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: fritz
+              domain: 
+                - update
 #################################################
     mobile_device:
       name: Mobile Device
