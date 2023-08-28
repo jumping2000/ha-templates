@@ -98,7 +98,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: Speedtest ID
       description: |
         ID of speedtest integration
-        Identificativo dell'integrazione speedtest (si può vedere da qui: )
+        Identificativo dell'integrazione speedtest (si può vedere da qui: {{ config_entry_id('sensor.speedtest_download') }})
       default:
       selector:
         text:
