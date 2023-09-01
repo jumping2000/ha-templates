@@ -90,6 +90,14 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       selector:
         entity:
           domain: input_number
+    helper_avviso_manutenzione:
+      name: (REQUIRED) Maintenance alert
+      description: |
+        Entity helper used to notify the maintenance alert
+        Entità helper usata per notificare gli avvisi di manutenzione
+      selector:
+        entity:
+          domain: input_number
     power_start:
       name: (REQUIRED) Starting power threshold
       description: |
@@ -171,7 +179,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (REQUIRED) Appliance Name
       description: |
         Appliance Name (Dishwasher/Oven/Wahsing Machine/Dryer or other)
-        appliance dell'oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice).
+        Elettrodomestico oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice).
       default: "Lavatrice"
       selector:
         text:
@@ -309,10 +317,13 @@ variables:
   notify_telegram: !input notify_telegram
   media_player_google: !input  media_player_google
   media_player_alexa: !input  media_player_alexa
-#################################################
+################################################# counter_sensor
 mode: queued
 max: 20
 max_exceeded: silent
+trigger_variables:
+  counter_sensor: !input counter_sensor
+  helper_avviso_manutenzione: !input helper_avviso_manutenzione
 trigger:
   - id: 'power_warm_up'
     platform: numeric_state
@@ -341,6 +352,11 @@ trigger:
   - id: 'status_notification'
     platform: state
     entity_id: !input status_sensor
+  - id: 'maintenance_alert'
+    platform: template
+    value_template: "{{ states(counter_sensor)|int(default=0) % states(helper_avviso_manutenzione)|int(default=0) == 0 }}"
+    for: "00:01:00"
+
 #### CONDITION ####
 condition:
   - condition: template
@@ -353,34 +369,6 @@ action:
   #     message: "{{notification_services}}"
   #####################################
   - choose:
-    # - alias: check first transiction FROM STATE1 to STATE2 or STATE3
-    #   conditions: "{{ trigger.from_state.state==stato1 and (trigger.to_state.state==stato2 or trigger.to_state.state==stato3) }}"
-    #   sequence:
-    #     - service: input_boolean.turn_off
-    #       target:
-    #         entity_id: !input helper_runtime
-    #     - service: input_boolean.turn_on
-    #       target:
-    #         entity_id: !input helper_runtime
-    #     - service: counter.increment
-    #       target:
-    #         entity_id: !input counter_sensor
-    #     - service: input_number.set_value
-    #       target:
-    #         entity_id: !input helper_total_energy
-    #       data:
-    #         value: "{{ states(energy_sensor) }}"
-    #     - &debug-mode
-    #       if:
-    #         - alias: "se DEBUG "
-    #           condition: template
-    #           value_template: "{{ debug_on }}"
-    #       then:
-    #         - service: system_log.write
-    #           data:
-    #             message: "Trigger_id: {{ trigger.id }}, old state: {{ trigger.from_state.state }}, new state: {{ trigger.to_state.state }}"
-    #             level: info
-    #####################################
     - alias: Idle (Stato1) --> Lavaggio/Riscaldamento (Stato2)
       conditions: "{{ trigger.id == 'power_start'}}"
       sequence:
@@ -579,3 +567,11 @@ action:
                   message: "{{ appliance|capitalize }} ha concluso il ciclo. Puoi mettere a posto."
               - *messaggio-stato
               - *debug-mode
+    ###################################
+    - alias: Avviso Manutenzione
+      conditions: "{{ trigger.id == 'maintenance_alert' }}"
+      sequence:
+        - variables:
+            message: "Hai raggiunto i {{ states(helper_avviso_manutenzione) }} cicli di lavaggio/cottura, è l'ora di fare manutenzione all'elettrodomestico {{ appliance }}"
+        - *messaggio-stato
+        - *debug-mode
