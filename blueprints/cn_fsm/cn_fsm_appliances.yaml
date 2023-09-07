@@ -21,6 +21,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       - monitors the total energy used
       - monitors the total value of exercise time
 
+    ### Funzionalità:
       - notifica il cambio di stato dell''elettrodomestico
       - notifica alert per la manutenzione dell''elettrodomestico
       - conta i cicli di lavaggio/asciugatura/cottura etc
@@ -49,6 +50,15 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       description: |
         Eenrgy sensor that monitors the enrgy absorbed by device 
         Sensore di energia che misura i consumi dell'elettrodomestico
+      selector:
+        entity:
+          domain: sensor
+    switch_plug:
+      name: (OPTIONAL) Appliance Switch
+      description: |
+        Switch to turn on/off the appliance
+        Entità switch per alimentare l'elettrodomestico
+      default:
       selector:
         entity:
           domain: sensor
@@ -92,8 +102,8 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       selector:
         entity:
           domain: input_number
-    helper_avviso_manutenzione:
-      name: (REQUIRED) Maintenance alert
+    helper_maintenance_alert:
+      name: (REQUIRED) Maintenance alert helper
       description: |
         Entity helper used to notify the maintenance alert
         Entità helper usata per notificare gli avvisi di manutenzione
@@ -182,7 +192,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       description: |
         Appliance Name (Dishwasher/Oven/Wahsing Machine/Dryer or other)
         Elettrodomestico oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice).
-      default: "Lavatrice"
+      default: "lavatrice"
       selector:
         text:
           type: text
@@ -197,7 +207,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         device:
           integration: mobile_app
     critical:
-      name: (Optional) Critical Notification
+      name: (OPTIONAL) Critical Notification
       description: |
         Send as a critical notification to the mobile device.
         Invio di una notifica di tipo critico allo smartphone
@@ -238,7 +248,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               domain: media_player
       default:
     volume_level:
-      name: (Optional) Volume Level
+      name: (OPTIONAL) Volume Level
       description: |
         Volume level for audio notification
         Livello del volume per Alexa e Google Nest/Home 
@@ -250,7 +260,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           unit_of_measurement: "%"
     ###################################
     use_centro_notifiche:
-      name: (Optional) Use Centro Notifiche
+      name: (OPTIONAL) Use Centro Notifiche
       description: |
         [OPTIONAL]  Use Centro Notifiche for notification services
         Usa il Centro Notifiche 
@@ -258,7 +268,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       selector:
         boolean:
     notification_services:
-      name: Notification services
+      name: (OPTIONAL) Notification services
       description: |
         Mobile, Telegram or other notification service configured with Centro Notifiche
         Serivzi di notifica Mobile App, Telegram o altro configurati nel Centro Notifiche
@@ -268,9 +278,9 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           entity_id: input_select.notifier_text_notify
     ###################################
     automation_status:
-      name: (Optional) Turn ON Automation 
+      name: (OPTIONAL) Turn ON Automation 
       description: |
-        [OPTIONAL] Global Automation, requires a 'input_boolean' { Toggle } Switch."
+        Global Automation, requires a 'input_boolean' { Toggle } Switch."
         Abilita/disabilita l'automazione in base allo stato di un input boolean.
       default:
       selector:
@@ -278,9 +288,9 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           domain: input_boolean
           multiple: false
     debug_on:
-      name: (Optional) Debug Mode On
+      name: (OPTIONAL) Debug Mode On
       description: |
-        [OPTIONAL] System Logging (INFO Level)
+        System Logging (INFO Level)
         Raccolta log del blueprint nel file di log di Home Assistant
       default:
       selector:
@@ -325,7 +335,7 @@ max: 20
 max_exceeded: silent
 trigger_variables:
   counter_sensor: !input counter_sensor
-  helper_avviso_manutenzione: !input helper_avviso_manutenzione
+  helper_maintenance_alert: !input helper_maintenance_alert
 trigger:
   - id: 'power_warm_up'
     platform: numeric_state
@@ -356,7 +366,7 @@ trigger:
     entity_id: !input status_sensor
   - id: 'maintenance_alert'
     platform: template
-    value_template: "{{ states(counter_sensor)|int(default=0) % states(helper_avviso_manutenzione)|int(default=0) == 0 }}"
+    value_template: "{{ states(counter_sensor)|int(default=0) % states(helper_maintenance_alert)|int(default=0) == 0 }}"
     for: "00:01:00"
 
 #### CONDITION ####
@@ -438,7 +448,7 @@ action:
                 data:
                   option: "{{ stato3 }}"
               - *debug-mode
-    - alias: Risciacquo/Mantenimento(Stato3) --> Lavaggio/Riscaldamento (Stato2)
+    - alias: Risciacquo/Mantenimento(Stato3) --> Lavaggio/Riscaldamento/Asciugatura (Stato2)
       conditions: "{{ trigger.id == 'power_warm_up' }}"
       sequence:
         - choose:
@@ -574,6 +584,6 @@ action:
       conditions: "{{ trigger.id == 'maintenance_alert' }}"
       sequence:
         - variables:
-            message: "Hai raggiunto i {{ states(helper_avviso_manutenzione) }} cicli di lavaggio/cottura, è l'ora di fare manutenzione all'elettrodomestico {{ appliance }}"
+            message: "Hai raggiunto i {{ states(helper_maintenance_alert) }} cicli di lavaggio/cottura, è l'ora di fare manutenzione all'elettrodomestico {{ appliance }}"
         - *messaggio-stato
         - *debug-mode
