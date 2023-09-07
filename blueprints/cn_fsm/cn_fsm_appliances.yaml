@@ -62,6 +62,24 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       selector:
         entity:
           domain: sensor
+    voltage_plug:
+      name: (OPTIONAL) Appliance Voltage
+      description: |
+        Voltage sensor exposed by the plug
+        Tensione esposta  dalla presa che alimenta l'elettrodomestico
+      default:
+      selector:
+        entity:
+          domain: sensor
+    current_plug:
+      name: (OPTIONAL) Appliance Current
+      description: |
+        Current sensor exposed by the plug
+        Corrente che alimenta l'elettrodomestico
+      default:
+      selector:
+        entity:
+          domain: sensor
     status:
       name: (REQUIRED) Device Status (input_select)
       description: |
