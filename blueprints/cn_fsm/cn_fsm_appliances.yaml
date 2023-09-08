@@ -602,6 +602,6 @@ action:
       conditions: "{{ trigger.id == 'maintenance_alert' }}"
       sequence:
         - variables:
-            message: "Hai raggiunto i {{ states(helper_maintenance_alert) }} cicli di lavaggio/cottura, è l'ora di fare manutenzione all'elettrodomestico {{ appliance }}"
+            message: "Hai raggiunto i {{ states(helper_maintenance_alert) }} cicli di funzionamento, è l'ora di fare manutenzione all'elettrodomestico {{ appliance }}"
         - *messaggio-stato
         - *debug-mode
