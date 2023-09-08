@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.09.01
+  name: CN FSM Elettrodomestici 2023.9.0
   description: |
     
     ## CN FSM Appliances

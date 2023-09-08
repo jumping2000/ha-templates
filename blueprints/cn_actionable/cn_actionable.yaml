@@ -1,10 +1,19 @@
-blueprint:
-  name: Centro Notifiche - Actionable Notification
+blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
+  name: CN Actionable Notification 2023.9.0
   description: |
-    ## Acknowledge Alert Notification
+    
+    ## CN Actionable Notification 
+
     This blueprint will send a defined number of notifications to your device or Telegram app or Alexa at a pre-defined interval until it has been acknowledged via the actionable notification.
-    ## Italian ##
-    Il blueprint invia un numero predefinito di notifiche via Companion App o Telegram oppure Alexa fino a quando non viene bloccato l'invio dalla actionable notification
+    
+    Il blueprint invia un numero predefinito di notifiche via Companion App o Telegram oppure Alexa fino a quando non viene bloccato l'invio dalla actionable notification.
+  
+    ### Required entities/integrations/components:
+      - "Centro Notifiche" (https://github.com/jumping2000/notifier)
+
+    Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
+    Date Started 15/05/2023 - Updated 01/09/2023
+
   domain: automation
   author: https://github.com/jumping2000/
   source_url: https://github.com/jumping2000/ha-templates/blob/main/blueprints/cn_actionable/cn_actionable.yaml
