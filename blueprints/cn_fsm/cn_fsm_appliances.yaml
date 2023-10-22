@@ -531,7 +531,7 @@ action:
                       condition: template
                       value_template: "{{ mobile_device !='a0' }}"
                     then:
-                      - device_id: !input  mobile_device
+                      - device_id: "{{ mobile_device}}" #!input  mobile_device
                         domain: mobile_app
                         type: notify
                         title: "-- Attenzione --"
