@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.9.0
+  name: CN FSM Elettrodomestici 2023.10.0
   description: |
     
     ## CN FSM Appliances
@@ -61,7 +61,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       default:
       selector:
         entity:
-          domain: sensor
+          domain: switch
     voltage_plug:
       name: (OPTIONAL) Appliance Voltage
       description: |
@@ -529,7 +529,7 @@ action:
                 default:
                   - if:
                       condition: template
-                      value_template: "{{ not not mobile_device }}"
+                      value_template: "{{ mobile_device !='a0' }}"
                     then:
                       - device_id: !input  mobile_device
                         domain: mobile_app
