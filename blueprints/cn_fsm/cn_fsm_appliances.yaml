@@ -384,7 +384,7 @@ trigger:
     entity_id: !input status_sensor
   - id: 'maintenance_alert'
     platform: template
-    value_template: "{{ states(counter_sensor)|int(default=0) % states(helper_maintenance_alert)|int(default=0) == 0 }}"
+    value_template: "{{ (states(counter_sensor)|int(default=0) % states(helper_maintenance_alert)|int(default=0) == 0) and states(counter_sensor)|int(default=0) >0 }}"
     for: "00:01:00"
 
 #### CONDITION ####
