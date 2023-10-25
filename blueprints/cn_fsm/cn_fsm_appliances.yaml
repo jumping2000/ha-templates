@@ -208,19 +208,27 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     appliance:
       name: (REQUIRED) Appliance Name
       description: |
-        Appliance Name (Dishwasher/Oven/Wahsing Machine/Dryer or other)
+        Appliance Name (Dishwasher/Oven/Wahsing Machine/Dryer)
         Elettrodomestico oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice).
       default: "lavatrice"
       selector:
-        text:
-          type: text
+        select:
+          options:
+            - label: Lavatrice / Washing Machine
+              value: lavatrice
+            - label: Asciugatrice / Dryer
+              value: asciugatrice
+            - label: Lavastoviglie / Dishwasher
+              value: lavastoviglie
+            - label: Forno / Oven
+              value: forno
 #################################################
     mobile_device:
       name: Mobile Device
       description: |
         The device must run the official Home Assistant app to receive notifications.
         Nome dello smartphone con App di Home Assistant
-      default:
+      default: false
       selector:
         device:
           integration: mobile_app
@@ -276,6 +284,14 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
           min: 0
           max: 100
           unit_of_measurement: "%"
+    send_intermediate_notification:
+      name: (OPTIONAL) Send notification for every state
+      description: |
+        [OPTIONAL]  Send notification for every state change
+        Invia le notifiche anche negli stati intermedi
+      default:
+      selector:
+        boolean:
     ###################################
     use_centro_notifiche:
       name: (OPTIONAL) Use Centro Notifiche
@@ -340,6 +356,7 @@ variables:
   volume_level: "{{ iif(not not _volume_level, (_volume_level /100)|float, 0.3) }}"
   notify: !input notification_services
   use_cn: !input use_centro_notifiche
+  send_intermediate: !input send_intermediate_notification
   #####################################
   critical: !input critical
   _mobile_device: !input mobile_device
@@ -484,10 +501,11 @@ action:
       sequence:
         - choose:
           - alias: Status -> Stato2 (Lavaggio/Riscaldamento) o Stato3 (Risciacquo/Mantenimento)
-            conditions: "{{ trigger.to_state.state in [stato2,stato3] }}"
+            conditions: "{{ trigger.to_state.state == stato2 and  trigger.from_state.state == stato1 }}"
             sequence:
               - variables:
-                  message: "{{appliance|capitalize}} è in fase di {{ trigger.to_state.state|lower }}"
+                  message: >
+                    {{ appliance|capitalize }} è in fase di {{ trigger.to_state.state|lower }} 🚩
               - &messaggio-stato
                 choose:
                   - conditions: "{{ use_cn and (not not media_player_alexa) and (not not media_player_google) }}"
@@ -524,14 +542,14 @@ action:
                       - service: script.my_notify
                         data:
                           title: "-- Attenzione --"
-                          message: "{{message}}"
-                          notify: "{{notify}}"
+                          message: "{{ message }}"
+                          notify: "{{ notify }}"
                 default:
                   - if:
                       condition: template
-                      value_template: "{{ mobile_device !='a0' }}"
+                      value_template: "{{ mobile_device != 'a0' }}"
                     then:
-                      - device_id: "{{ mobile_device}}" #!input  mobile_device
+                      - device_id: !input mobile_device #"{{ mobile_device }}"
                         domain: mobile_app
                         type: notify
                         title: "-- Attenzione --"
@@ -583,18 +601,34 @@ action:
                           data:
                             type: announce 
               - *debug-mode
-          - alias: Status --> stato1
+          - alias: Status -> Stato2 (Lavaggio/Riscaldamento) o Stato3 (Risciacquo/Mantenimento)
+            conditions: "{{ trigger.to_state.state in [stato2,stato3] and send_intermediate }}"
+            sequence:
+              - variables:
+                  message: "{{appliance|capitalize}} è in fase di {{ trigger.to_state.state|lower }}"
+              - *messaggio-stato
+              - *debug-mode
+          - alias: Status --> Stato1
             conditions: "{{ trigger.to_state.state == stato1 }}"
             sequence:
               - variables:
-                  message: "{{ appliance|capitalize }} ritornato nello stato iniziale"
+                  message: " {{ appliance|capitalize }} ritornato nello stato iniziale 🏁"
               - *messaggio-stato
               - *debug-mode
           - alias: Status -> Stato4
             conditions: "{{ trigger.to_state.state == stato4 }}"
             sequence:
               - variables:
-                  message: "{{ appliance|capitalize }} ha concluso il ciclo. Puoi mettere a posto."
+                  message: >
+                    {% set cicli = states('sensor.' ~ appliance ~ '_oggi_cicli') %}
+                    {% set energy = states('sensor.' ~ appliance ~ '_oggi_energy') %}
+                    {% set runtime = states('sensor.' ~ appliance ~ '_oggi_runtime') %}
+                    {% set cost = state_attr('sensor.' ~ appliance ~ '_cost','oggi_cost') %}
+                    {{ appliance|capitalize }} ha concluso il ciclo 🏁. Puoi mettere a posto.
+                    ♻: {{ cicli }} cicli oggi
+                    ⌛: {{ runtime }} ore oggi
+                    🏭: {{ energy }}kWh consumati oggi
+                    💰: {{ cost}}€ spesi oggi
               - *messaggio-stato
               - *debug-mode
     ###################################
@@ -602,6 +636,6 @@ action:
       conditions: "{{ trigger.id == 'maintenance_alert' }}"
       sequence:
         - variables:
-            message: "Hai raggiunto i {{ states(helper_maintenance_alert) }} cicli di funzionamento, è l'ora di fare manutenzione all'elettrodomestico {{ appliance }}"
+            message: "Hai raggiunto i {{ states(helper_maintenance_alert) }} cicli di funzionamento, è l'ora di fare manutenzione 🔧 all'elettrodomestico {{ appliance }}"
         - *messaggio-stato
         - *debug-mode
