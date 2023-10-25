@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.10.0
+  name: CN FSM Elettrodomestici 2023.10.1
   description: |
     
     ## CN FSM Appliances
@@ -29,7 +29,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       - monitora il valore totale del tempo di esercizio
 
     Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 15/05/2023 - Updated 01/09/2023
+    Date Started 15/05/2023 - Updated 25/10/2023
 
   domain: automation
   author: https://github.com/jumping2000/
