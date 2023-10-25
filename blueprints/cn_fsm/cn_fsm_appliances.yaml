@@ -105,7 +105,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         entity:
           domain: counter
     helper_runtime:
-      name: (REQUIRED) Runtime helper
+      name: (REQUIRED) Runtime helper (input_boolean)
       description: |
         Entity helper used to calculate total runtime
         Entità helper usata per il calcolo dei tempi totali di utilizzo
@@ -113,7 +113,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         entity:
           domain: input_boolean
     helper_total_energy:
-      name: (REQUIRED) Total energy helper 
+      name: (REQUIRED) Total energy helper (input_number)
       description: |
         Entity helper used to calculate total energy consumed by appliance
         Entità helper usata per il calcolo dell'energia totale consumata dall'elettrodomestico
@@ -121,7 +121,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
         entity:
           domain: input_number
     helper_maintenance_alert:
-      name: (REQUIRED) Maintenance alert helper
+      name: (REQUIRED) Maintenance alert helper (input_number)
       description: |
         Entity helper used to notify the maintenance alert
         Entità helper usata per notificare gli avvisi di manutenzione
