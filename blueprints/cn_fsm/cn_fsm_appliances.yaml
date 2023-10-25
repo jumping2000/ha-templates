@@ -624,11 +624,15 @@ action:
                     {% set energy = states('sensor.' ~ appliance ~ '_oggi_energy') %}
                     {% set runtime = states('sensor.' ~ appliance ~ '_oggi_runtime') %}
                     {% set cost = state_attr('sensor.' ~ appliance ~ '_cost','oggi_cost') %}
-                    {{ appliance|capitalize }} ha concluso il ciclo 🏁. Puoi mettere a posto.
+                    {{ appliance|capitalize }} ha concluso il ciclo di lavoro 🏁. Puoi mettere a posto.
+
                     ♻: {{ cicli }} cicli oggi
+                    
                     ⌛: {{ runtime }} ore oggi
-                    🏭: {{ energy }}kWh consumati oggi
-                    💰: {{ cost}}€ spesi oggi
+                    
+                    🏭: {{ energy }} kWh consumati oggi
+                    
+                    💰: {{ cost}} € spesi oggi
               - *messaggio-stato
               - *debug-mode
     ###################################
