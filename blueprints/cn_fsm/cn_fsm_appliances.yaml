@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.10.1
+  name: CN FSM Elettrodomestici 2023.10.2
   description: |
     
     ## CN FSM Appliances
@@ -29,7 +29,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       - monitora il valore totale del tempo di esercizio
 
     Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 15/05/2023 - Updated 25/10/2023
+    Date Started 15/05/2023 - Updated 29/10/2023
 
   domain: automation
   author: https://github.com/jumping2000/
@@ -176,7 +176,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (REQUIRED) Delay between states
       description: |
         Time spent in the intermediate states
-        Tempo di permanenza negli stati intermedi 
+        Tempo di permanenza negli stati intermedi
       default: 1
       selector:
         number:
@@ -209,7 +209,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (REQUIRED) Appliance Name
       description: |
         Appliance Name (Dishwasher/Oven/Wahsing Machine/Dryer)
-        Elettrodomestico oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice).
+        Elettrodomestico oggetto dell'automazione (Es. Lavatrice/Forno/Lavastoviglie/Asciugatrice)
       default: "lavatrice"
       selector:
         select:
@@ -222,11 +222,19 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
               value: lavastoviglie
             - label: Forno / Oven
               value: forno
+    time_reset:
+      name: (REQUIRED) Time Reset
+      description: |
+        Reset of the appliance state to initial value to prevent incorrect behavior of the automation
+        Esecuzione all'orario indicato di un reset dello stato per prevenire comportamenti scorretti dell'automazione
+      default: "02:00:00"
+      selector:
+        time:
 #################################################
     mobile_device:
       name: Mobile Device
       description: |
-        The device must run the official Home Assistant app to receive notifications.
+        The device must run the official Home Assistant app to receive notifications
         Nome dello smartphone con App di Home Assistant
       default: false
       selector:
@@ -235,7 +243,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     critical:
       name: (OPTIONAL) Critical Notification
       description: |
-        Send as a critical notification to the mobile device.
+        Send as a critical notification to the mobile device
         Invio di una notifica di tipo critico allo smartphone
       default:
       selector:
@@ -277,7 +285,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (OPTIONAL) Volume Level
       description: |
         Volume level for audio notification
-        Livello del volume per Alexa e Google Nest/Home 
+        Livello del volume per Alexa e Google Nest/Home
       default: 30
       selector:
         number:
@@ -297,7 +305,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (OPTIONAL) Use Centro Notifiche
       description: |
         [OPTIONAL]  Use Centro Notifiche for notification services
-        Usa il Centro Notifiche 
+        Usa il Centro Notifiche
       default:
       selector:
         boolean:
@@ -315,7 +323,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       name: (OPTIONAL) Turn ON Automation 
       description: |
         Global Automation, requires a 'input_boolean' { Toggle } Switch."
-        Abilita/disabilita l'automazione in base allo stato di un input boolean.
+        Abilita/disabilita l'automazione in base allo stato di un input boolean
       default:
       selector:
         entity:
@@ -364,7 +372,7 @@ variables:
   notify_telegram: !input notify_telegram
   media_player_google: !input  media_player_google
   media_player_alexa: !input  media_player_alexa
-################################################# counter_sensor
+#################################################
 mode: queued
 max: 20
 max_exceeded: silent
@@ -403,7 +411,9 @@ trigger:
     platform: template
     value_template: "{{ (states(counter_sensor)|int(default=0) % states(helper_maintenance_alert)|int(default=0) == 0) and states(counter_sensor)|int(default=0) >0 }}"
     for: "00:01:00"
-
+  - id: 'time_reset'
+    platform: time
+    at: !input time_reset
 #### CONDITION ####
 condition:
   - condition: template
@@ -642,4 +652,14 @@ action:
         - variables:
             message: "Hai raggiunto i {{ states(helper_maintenance_alert) }} cicli di funzionamento, è l'ora di fare manutenzione 🔧 all'elettrodomestico {{ appliance }}"
         - *messaggio-stato
+        - *debug-mode
+    ###################################
+    - alias: Ripristino stato iniziale
+      conditions: "{{ trigger.id == 'time_reset' }}"
+      sequence:
+        - service: input_select.select_option
+          target:
+            entity_id: "{{ status }}"
+          data:
+            option: "{{ stato1 }}"
         - *debug-mode
