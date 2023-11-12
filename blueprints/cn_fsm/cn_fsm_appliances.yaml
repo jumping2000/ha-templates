@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.10.2
+  name: CN FSM Elettrodomestici 2023.11.0
   description: |
     
     ## CN FSM Appliances
@@ -29,7 +29,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       - monitora il valore totale del tempo di esercizio
 
     Authors: [Gianpi](https://github.com/jumping2000) by [Site hassiohelp](https://hassiohelp.eu/)
-    Date Started 15/05/2023 - Updated 29/10/2023
+    Date Started 15/05/2023 - Updated 12/11/2023
 
   domain: automation
   author: https://github.com/jumping2000/
@@ -595,6 +595,7 @@ action:
                         data:
                           message: "{{ message }}"
                           entity_id: !input  media_player_google
+                      - delay: "00:00:04"
                   - if:
                       condition: template
                       value_template: "{{ not not media_player_alexa }}"
@@ -604,12 +605,14 @@ action:
                           volume_level: "{{ volume_level }}"
                         target:
                           entity_id: !input  media_player_alexa
+                      - delay: "00:00:01"
                       - service: notify.alexa_media
                         data:
                           message: "{{ message }}"
                           target: !input  media_player_alexa
                           data:
-                            type: announce 
+                            type: announce
+                      - delay: "00:00:04"
               - *debug-mode
           - alias: Status -> Stato2 (Lavaggio/Riscaldamento) o Stato3 (Risciacquo/Mantenimento)
             conditions: "{{ trigger.to_state.state in [stato2,stato3] and send_intermediate }}"
