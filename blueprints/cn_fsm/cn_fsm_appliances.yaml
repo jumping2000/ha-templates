@@ -1,5 +1,5 @@
 blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
-  name: CN FSM Elettrodomestici 2023.11.0
+  name: CN FSM Elettrodomestici 2023.12.0
   description: |
     
     ## CN FSM Appliances
@@ -13,6 +13,9 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
       - Energy sensor
       - Helper sensor (see https://github.com/jumping2000/ha-packages/tree/main/elettrodomestici_2023  )
       - Telegram **or** Mobile App Device **or** ALexa **or** Google **or** "Centro Notifiche"
+
+    ### Last Update
+      - fixes in Google and Alexa messages
 
     ### Features:
       - notifications about appliance status
@@ -48,7 +51,7 @@ blueprint: #https://www.home-assistant.io/docs/blueprint/schema/
     energy_plug:
       name: (REQUIRED) Appliance Energy Consumption
       description: |
-        Eenrgy sensor that monitors the enrgy absorbed by device 
+        Eenrgy sensor (kWh) that monitors the energy absorbed by device 
         Sensore di energia che misura i consumi dell'elettrodomestico
       selector:
         entity:
@@ -590,12 +593,12 @@ action:
                           volume_level: "{{ volume_level }}"
                         target:
                           entity_id: !input  media_player_google
-                      - delay: "00:00:01"
+                      - delay: "00:00:04"
                       - service: tts.google_translate_say
                         data:
-                          message: "{{ message }}"
+                          message: "{{ message | regex_replace(find='[^\\w]', replace=' ') }}"
                           entity_id: !input  media_player_google
-                      - delay: "00:00:04"
+                      - delay: "00:00:02"
                   - if:
                       condition: template
                       value_template: "{{ not not media_player_alexa }}"
@@ -605,20 +608,20 @@ action:
                           volume_level: "{{ volume_level }}"
                         target:
                           entity_id: !input  media_player_alexa
-                      - delay: "00:00:01"
+                      - delay: "00:00:04"
                       - service: notify.alexa_media
                         data:
-                          message: "{{ message }}"
+                          message: "{{ message | regex_replace(find='[^\\w]', replace=' ') }}"
                           target: !input  media_player_alexa
                           data:
                             type: announce
-                      - delay: "00:00:04"
+                      - delay: "00:00:02"
               - *debug-mode
           - alias: Status -> Stato2 (Lavaggio/Riscaldamento) o Stato3 (Risciacquo/Mantenimento)
             conditions: "{{ trigger.to_state.state in [stato2,stato3] and send_intermediate }}"
             sequence:
               - variables:
-                  message: "{{appliance|capitalize}} è in fase di {{ trigger.to_state.state|lower }}"
+                  message: "{{ appliance|capitalize }} è in fase di {{ trigger.to_state.state|lower }}"
               - *messaggio-stato
               - *debug-mode
           - alias: Status --> Stato1
@@ -645,7 +648,7 @@ action:
                     
                     🏭: {{ energy }} kWh consumati oggi
                     
-                    💰: {{ cost}} € spesi oggi
+                    💰: {{ cost }} € spesi oggi
               - *messaggio-stato
               - *debug-mode
     ###################################
